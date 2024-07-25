@@ -7,6 +7,11 @@ A new Flutter project.
 flutter create --platforms linux proto1
 ```
 
+# JSON via serializable
+```dart
+dart run build_runner build --delete-conflicting-outputs
+```
+
 # Launch config
 ```json
         {

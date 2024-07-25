@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:proto1/widgets/properties_tab_widget.dart';
+import 'package:proto1/widgets/system_tab_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:split_view/split_view.dart';
 
+import '../model/appstate.dart';
+import 'global_tab_widget.dart';
 import 'spikes_graph_widget.dart';
+
+const String defaultExportFileName = 'SimModel.json';
 
 class MainHomePage extends StatefulWidget {
   const MainHomePage({super.key, required this.title});
@@ -15,6 +22,8 @@ class MainHomePage extends StatefulWidget {
 class _MainHomePageState extends State<MainHomePage> {
   @override
   Widget build(BuildContext context) {
+    final appState = context.watch<AppState>();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -87,7 +96,7 @@ class _MainHomePageState extends State<MainHomePage> {
         ),
         children: [
           _buildGraphView(),
-          _buildTabBar(),
+          _buildTabBar(appState),
         ],
       ),
     );
@@ -127,17 +136,21 @@ Widget _buildGraphView() {
   );
 }
 
-Widget _buildTabBar() {
-  return const DefaultTabController(
-    length: 2,
+Widget _buildTabBar(AppState appState) {
+  return DefaultTabController(
+    length: 3,
     child: Column(
       children: [
-        SizedBox(
+        const SizedBox(
           height: 50,
           child: TabBar(
             tabs: [
               Text(
                 'Global',
+                style: TextStyle(fontSize: 20),
+              ),
+              Text(
+                'Properties',
                 style: TextStyle(fontSize: 20),
               ),
               Text(
@@ -150,8 +163,9 @@ Widget _buildTabBar() {
         Expanded(
           child: TabBarView(
             children: [
-              Text('Tab1'),
-              Text('Tab2'),
+              GlobalTabWidget(appState: appState),
+              PropertiesTabWidget(appState: appState),
+              SystemTabWidget(appState: appState),
             ],
           ),
         )

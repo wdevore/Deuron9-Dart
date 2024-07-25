@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:proto1/model/appstate.dart';
+import 'package:provider/provider.dart';
 // import 'package:window_manager/window_manager.dart';
 
 import 'widgets/main_home_page.dart';
 
+final AppState _appState = AppState.create();
+
 void main() {
   // setupWindow();
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider.value(
+      value: _appState,
+      child: const SimApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SimApp extends StatelessWidget {
+  const SimApp({super.key});
 
   // This widget is the root of your application.
   @override
