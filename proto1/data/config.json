@@ -8,7 +8,7 @@
   "outputPoissonFiles": "poi_samples_span_",
   "outputSynapseSurgeFiles": "synapse_surge_samples_span_",
   "outputSynapseSpikeFiles": "synapse_input_samples_span_",
-  "scroll": 0,
+  "scroll": 0.0,
   "dataOutputPath": "/media/RAMDisk/",
   "rangeStart": 3761,
   "rangeEnd": 7553,

@@ -119,7 +119,7 @@ class SystemTabWidget extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 // Create a baseline sim config
-                appState.createNeuron('Simulate');
+                appState.createNeuron();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green.shade100,

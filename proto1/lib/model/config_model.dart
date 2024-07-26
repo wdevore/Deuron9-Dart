@@ -13,7 +13,7 @@ class ConfigModel {
   String outputPoissonFiles = '';
   String outputSynapseSurgeFiles = '';
   String outputSynapseSpikeFiles = '';
-  int scroll = 0;
+  double scroll = 0.0; // velocity
   String dataOutputPath = '';
   int rangeStart = 0;
   int rangeEnd = 0;

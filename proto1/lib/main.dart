@@ -9,6 +9,7 @@ final AppState _appState = AppState.create();
 
 void main() {
   // setupWindow();
+  _appState.initialize();
 
   runApp(
     ChangeNotifierProvider.value(

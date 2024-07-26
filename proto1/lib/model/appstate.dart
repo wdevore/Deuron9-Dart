@@ -17,6 +17,10 @@ class AppState with ChangeNotifier {
 
   bool dirty = true;
 
+  void initialize() {
+    createNeuron();
+  }
+
   void reset() {}
 
   void update() {}
@@ -25,10 +29,20 @@ class AppState with ChangeNotifier {
     final File file = File(fileName);
   }
 
-  void createNeuron(String name) {
+  void createNeuron() {
     Neuron neuron = Neuron.create();
     model = Model(neuron);
   }
+
+  // ----------------------------------------------------------------
+  // State management
+  // ----------------------------------------------------------------
+  set activeSynapse(int v) {
+    model?.activeSynapse = v;
+    notifyListeners();
+  }
+
+  int get activeSynapse => model!.activeSynapse;
 
   @override
   String toString() {
