@@ -1,6 +1,6 @@
 {
     "synapses": 20,
-    "activeSynapse": 0,
+    "activeSynapse": 1,
     "poissonPatternSpread": 50,
     "percentOfExcititorySynapses": 80.0,
     "hertz": 5,

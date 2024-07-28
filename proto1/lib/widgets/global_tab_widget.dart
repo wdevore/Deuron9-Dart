@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../model/appstate.dart';
+import 'float_field_widget.dart';
+import 'int_field_widget.dart';
 
 class GlobalTabWidget extends StatefulWidget {
   final AppState appState;
@@ -18,92 +21,90 @@ class _GlobalTabWidgetState extends State<GlobalTabWidget> {
   TextEditingController rangeStartController = TextEditingController();
   TextEditingController rangeEndController = TextEditingController();
   TextEditingController scrollVelocityController = TextEditingController();
+  TextEditingController minRangeValueController = TextEditingController();
+  TextEditingController maxRangeValueController = TextEditingController();
+  TextEditingController centerRangeValueController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final appState = context.watch<AppState>();
-
-    if (appState.configModel != null) {
-      durationController.text = appState.configModel!.duration.toString();
-      timeScaleController.text = appState.configModel!.timeScale.toString();
-      rangeStartController.text = appState.configModel!.rangeStart.toString();
-      rangeEndController.text = appState.configModel!.rangeEnd.toString();
-      scrollVelocityController.text = appState.configModel!.scroll.toString();
+    if (widget.appState.configModel != null) {
+      durationController.text =
+          widget.appState.configModel!.duration.toString();
+      timeScaleController.text =
+          widget.appState.configModel!.timeScale.toString();
+      rangeStartController.text =
+          widget.appState.configModel!.rangeStart.toString();
+      rangeEndController.text =
+          widget.appState.configModel!.rangeEnd.toString();
+      scrollVelocityController.text =
+          widget.appState.configModel!.scroll.toString();
     }
+
+    minRangeValueController.text = widget.appState.minRangeValue.toString();
+    maxRangeValueController.text = widget.appState.maxRangeValue.toString();
+    centerRangeValueController.text =
+        widget.appState.centerRangeValue.toString();
 
     return Column(
       children: [
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(4, 0, 5, 4),
-              child: Text('Duration:'),
-            ),
-            Expanded(
-              child: TextField(
-                controller: durationController,
-                onChanged: (value) {
-                  appState.configModel!.duration = int.parse(value);
-                },
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(4, 0, 5, 4),
-              child: Text('TimeScale:'),
-            ),
-            Expanded(
-              child: TextField(
-                controller: timeScaleController,
-                onChanged: (value) {
-                  appState.configModel!.timeScale = int.parse(value);
-                },
-              ),
-            ),
-          ],
+        Consumer<AppState>(
+          builder: (context, appState, child) {
+            return Row(
+              children: [
+                IntFieldWidget(
+                  appState: appState,
+                  controller: durationController,
+                  label: 'Duration: ',
+                  setValue: (int value) =>
+                      appState.configModel!.duration = value,
+                ),
+                IntFieldWidget(
+                  appState: appState,
+                  controller: timeScaleController,
+                  label: 'TimeScale: ',
+                  setValue: (int value) =>
+                      appState.configModel!.timeScale = value,
+                ),
+              ],
+            );
+          },
         ),
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(4, 0, 5, 4),
-              child: Text('Range Start:'),
-            ),
-            Expanded(
-              child: TextField(
-                controller: rangeStartController,
-                onChanged: (value) {
-                  appState.configModel!.rangeStart = int.parse(value);
-                },
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(4, 0, 5, 4),
-              child: Text('Range End:'),
-            ),
-            Expanded(
-              child: TextField(
-                controller: rangeEndController,
-                onChanged: (value) {
-                  appState.configModel!.rangeEnd = int.parse(value);
-                },
-              ),
-            ),
-          ],
+        Consumer<AppState>(
+          builder: (context, appState, child) {
+            return Row(
+              children: [
+                IntFieldWidget(
+                  appState: appState,
+                  controller: rangeStartController,
+                  label: 'Range Start: ',
+                  setValue: (int value) =>
+                      appState.configModel!.rangeStart = value,
+                ),
+                IntFieldWidget(
+                  appState: appState,
+                  controller: rangeEndController,
+                  label: 'Range End: ',
+                  setValue: (int value) =>
+                      appState.configModel!.rangeEnd = value,
+                ),
+              ],
+            );
+          },
         ),
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(4, 0, 5, 4),
-              child: Text('Scroll velocity:'),
-            ),
-            Expanded(
-              child: TextField(
-                controller: scrollVelocityController,
-                onChanged: (value) {
-                  appState.configModel!.scroll = double.parse(value);
-                },
-              ),
-            ),
-          ],
+        Consumer<AppState>(
+          builder: (context, appState, child) {
+            return Row(
+              children: [
+                FloatFieldWidget(
+                  appState: appState,
+                  controller: scrollVelocityController,
+                  label: 'Scroll velocity: ',
+                  setValue: (double value) =>
+                      appState.configModel!.scroll = value,
+                ),
+              ],
+            );
+          },
         ),
         // Slider
         Consumer<AppState>(
@@ -124,7 +125,7 @@ class _GlobalTabWidgetState extends State<GlobalTabWidget> {
                   child: Slider(
                     value: appState.activeSynapse.toDouble(),
                     min: 1,
-                    max: 100,
+                    max: appState.model!.synapses.toDouble(),
                     divisions: 100,
                     onChanged: (value) {
                       appState.activeSynapse = value.toInt();
@@ -135,7 +136,65 @@ class _GlobalTabWidgetState extends State<GlobalTabWidget> {
               ],
             );
           },
-        )
+        ),
+        Consumer<AppState>(
+          builder: (context, appState, child) {
+            return Row(
+              children: [
+                FloatFieldWidget(
+                  appState: appState,
+                  controller: minRangeValueController,
+                  label: 'Min Value: ',
+                  setValue: (double value) => appState.minRangeValue = value,
+                ),
+                FloatFieldWidget(
+                  appState: appState,
+                  controller: maxRangeValueController,
+                  label: 'Max Value: ',
+                  setValue: (double value) => appState.maxRangeValue = value,
+                ),
+                FloatFieldWidget(
+                  appState: appState,
+                  controller: centerRangeValueController,
+                  label: 'Max Value: ',
+                  setValue: (double value) => appState.centerRangeValue = value,
+                ),
+              ],
+            );
+          },
+        ),
+        Consumer<AppState>(
+          builder: (context, appState, child) {
+            return Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    title: const Text('Hard Bounds'),
+                    leading: Radio<int>(
+                      value: 0,
+                      groupValue: appState.weightBounding,
+                      onChanged: (value) {
+                        appState.weightBounding = value!;
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    title: const Text('Soft Bounds'),
+                    leading: Radio<int>(
+                      value: 1,
+                      groupValue: appState.weightBounding,
+                      onChanged: (value) {
+                        appState.weightBounding = value!;
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ],
     );
   }

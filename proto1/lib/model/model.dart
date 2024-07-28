@@ -97,7 +97,7 @@ class Neuron {
 
 @JsonSerializable()
 class Model {
-  int synapses = 0;
+  int synapses = 1;
   int activeSynapse = 1;
   int poissonPatternSpread = 0;
   double percentOfExcititorySynapses = 0;
