@@ -73,7 +73,7 @@ class Dendrite {
 }
 
 @JsonSerializable()
-class Neuron {
+class Neuron with ChangeNotifier {
   int id = 0;
   double tao = 0;
   double fastSurge = 0;

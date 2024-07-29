@@ -28,6 +28,9 @@ void main() async {
       ChangeNotifierProvider.value(
         value: _appState.model,
       ),
+      ChangeNotifierProvider.value(
+        value: _appState.model.neuron,
+      ),
     ],
     child: const SimApp(),
   ));
