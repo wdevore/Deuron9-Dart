@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'config_model.g.dart';
 
 @JsonSerializable()
-class ConfigModel {
+class ConfigModel with ChangeNotifier {
   bool autoSave = true;
   bool stepEnabled = false;
   String simulation = '';
@@ -21,7 +22,7 @@ class ConfigModel {
   double stimulusScaler = 10;
   int duration = 10000;
   double softAcceleration = 0.05;
-  double softCurve = 2;
+  double softCurve = 2; // 1.0 = linear, 2.0 = parabola
   String outputDendriteAvgFiles = '';
   String outputSynapseWeightFiles = '';
   String outputSomaSpikeFiles = '';
@@ -43,4 +44,24 @@ class ConfigModel {
   factory ConfigModel.fromJson(Map<String, dynamic> json) =>
       _$ConfigModelFromJson(json);
   Map<String, dynamic> toJson() => _$ConfigModelToJson(this);
+
+  void update() {
+    notifyListeners();
+  }
+
+  // ---------------------------
+  set softnessAcceleration(double v) {
+    softAcceleration = v;
+    notifyListeners();
+  }
+
+  double get softnessAcceleration => softAcceleration;
+
+  // ---------------------------
+  set softnessCurve(double v) {
+    softCurve = v;
+    notifyListeners();
+  }
+
+  double get softnessCurve => softCurve;
 }

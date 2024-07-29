@@ -7,16 +7,37 @@ import 'widgets/main_home_page.dart';
 
 final AppState _appState = AppState.create();
 
-void main() {
+void main() async {
   // setupWindow();
-  _appState.initialize();
+  await _appState.initialize();
 
-  runApp(
-    ChangeNotifierProvider.value(
-      value: _appState,
-      child: const SimApp(),
-    ),
-  );
+  // NOTE: RetroVibrato has an example of using a MultiProvider lower in the
+  // widget tree closer to usage site. This improves update traversal
+  // tree queries.
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider.value(
+        value: _appState,
+      ),
+      ChangeNotifierProvider.value(
+        value: _appState.environment,
+      ),
+      ChangeNotifierProvider.value(
+        value: _appState.configModel,
+      ),
+      ChangeNotifierProvider.value(
+        value: _appState.model,
+      ),
+    ],
+    child: const SimApp(),
+  ));
+
+  // runApp(
+  //   ChangeNotifierProvider.value(
+  //     value: _appState,
+  //     child: const SimApp(),
+  //   ),
+  // );
 }
 
 class SimApp extends StatelessWidget {

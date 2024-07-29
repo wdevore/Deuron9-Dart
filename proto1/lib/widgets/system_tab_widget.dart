@@ -47,7 +47,7 @@ class SystemTabWidget extends StatelessWidget {
               onPressed: () {
                 var filePath = p.join(Directory.current.path, 'data/');
                 Utils.export(
-                    appState.configModel!.toJson(), 'config.json', filePath,
+                    appState.configModel.toJson(), 'config.json', filePath,
                     showDialog: true);
               },
               style: ElevatedButton.styleFrom(
@@ -130,7 +130,7 @@ class SystemTabWidget extends StatelessWidget {
                 ),
               ),
               child: const Tooltip(
-                message: 'Create new Sim.',
+                message: 'Create new Neuron.',
                 waitDuration: Durations.long1,
                 child: Text('New'),
               ),

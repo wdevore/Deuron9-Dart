@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'model.g.dart';
@@ -96,9 +97,9 @@ class Neuron {
 }
 
 @JsonSerializable()
-class Model {
+class Model with ChangeNotifier {
   int synapses = 1;
-  int activeSynapse = 1;
+  int _activeSynapse = 1;
   int poissonPatternSpread = 0;
   double percentOfExcititorySynapses = 0;
 
@@ -123,6 +124,21 @@ class Model {
 
   Model(this.neuron);
 
+  factory Model.create() {
+    Neuron neuron = Neuron.create();
+    return Model(neuron);
+  }
+
   factory Model.fromJson(Map<String, dynamic> json) => _$ModelFromJson(json);
   Map<String, dynamic> toJson() => _$ModelToJson(this);
+
+  // ----------------------------------------------------------------
+  // State management
+  // ----------------------------------------------------------------
+  set activeSynapse(int v) {
+    _activeSynapse = v;
+    notifyListeners();
+  }
+
+  int get activeSynapse => _activeSynapse;
 }

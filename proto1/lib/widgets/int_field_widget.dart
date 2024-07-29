@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../model/appstate.dart';
-
 typedef SetValueI = void Function(int);
 
 class IntFieldWidget extends StatefulWidget {
   const IntFieldWidget(
       {super.key,
-      required this.appState,
       required this.label,
       required this.setValue,
       required this.controller});
 
   final TextEditingController controller;
-  final AppState appState;
   final String label;
   final SetValueI setValue;
 

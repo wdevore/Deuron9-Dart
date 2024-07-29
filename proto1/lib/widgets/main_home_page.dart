@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proto1/widgets/properties_tab_widget.dart';
+import 'package:proto1/widgets/simulation_properties_tab_widget.dart';
 import 'package:proto1/widgets/system_tab_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:split_view/split_view.dart';
@@ -150,7 +150,7 @@ Widget _buildTabBar(AppState appState) {
                 style: TextStyle(fontSize: 20),
               ),
               Text(
-                'Properties',
+                'Simulation',
                 style: TextStyle(fontSize: 20),
               ),
               Text(
@@ -164,7 +164,7 @@ Widget _buildTabBar(AppState appState) {
           child: TabBarView(
             children: [
               GlobalTabWidget(appState: appState),
-              PropertiesTabWidget(appState: appState),
+              SimulationPropertiesTabWidget(appState: appState),
               SystemTabWidget(appState: appState),
             ],
           ),

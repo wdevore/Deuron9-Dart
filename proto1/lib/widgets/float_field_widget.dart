@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../model/appstate.dart';
-
 typedef SetValueF = void Function(double);
 
 class FloatFieldWidget extends StatefulWidget {
   const FloatFieldWidget(
       {super.key,
-      required this.appState,
       required this.label,
       required this.setValue,
       required this.controller});
 
   final TextEditingController controller;
-  final AppState appState;
   final String label;
   final SetValueF setValue;
 
