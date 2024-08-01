@@ -10,10 +10,10 @@ Synapse _$SynapseFromJson(Map<String, dynamic> json) => Synapse()
   ..taoP = (json['taoP'] as num).toDouble()
   ..taoN = (json['taoN'] as num).toDouble()
   ..mu = (json['mu'] as num).toDouble()
-  ..distance = (json['distance'] as num).toDouble()
-  ..lambda = (json['lambda'] as num).toDouble()
   ..amb = (json['amb'] as num).toDouble()
+  ..lambda = (json['lambda'] as num).toDouble()
   ..w = (json['w'] as num).toDouble()
+  ..distance = (json['distance'] as num).toDouble()
   ..alpha = (json['alpha'] as num).toDouble()
   ..learningRateSlow = (json['learningRateSlow'] as num).toDouble()
   ..learningRateFast = (json['learningRateFast'] as num).toDouble()
@@ -24,10 +24,10 @@ Map<String, dynamic> _$SynapseToJson(Synapse instance) => <String, dynamic>{
       'taoP': instance.taoP,
       'taoN': instance.taoN,
       'mu': instance.mu,
-      'distance': instance.distance,
-      'lambda': instance.lambda,
       'amb': instance.amb,
+      'lambda': instance.lambda,
       'w': instance.w,
+      'distance': instance.distance,
       'alpha': instance.alpha,
       'learningRateSlow': instance.learningRateSlow,
       'learningRateFast': instance.learningRateFast,
@@ -46,31 +46,31 @@ Compartment _$CompartmentFromJson(Map<String, dynamic> json) => Compartment(
 Map<String, dynamic> _$CompartmentToJson(Compartment instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'synapse': instance.synapse,
       'weightMin': instance.weightMin,
       'weightMax': instance.weightMax,
       'weightDivisor': instance.weightDivisor,
-      'synapse': instance.synapse,
     };
 
 Dendrite _$DendriteFromJson(Map<String, dynamic> json) => Dendrite()
   ..id = (json['id'] as num).toInt()
+  ..compartment =
+      Compartment.fromJson(json['compartment'] as Map<String, dynamic>)
   ..length = (json['length'] as num).toDouble()
   ..taoEff = (json['taoEff'] as num).toDouble()
-  ..minPSPValue = (json['minPSPValue'] as num).toDouble()
-  ..compartments = (json['compartments'] as List<dynamic>)
-      .map((e) => Compartment.fromJson(e as Map<String, dynamic>))
-      .toList();
+  ..minPSPValue = (json['minPSPValue'] as num).toDouble();
 
 Map<String, dynamic> _$DendriteToJson(Dendrite instance) => <String, dynamic>{
       'id': instance.id,
+      'compartment': instance.compartment,
       'length': instance.length,
       'taoEff': instance.taoEff,
       'minPSPValue': instance.minPSPValue,
-      'compartments': instance.compartments,
     };
 
 Neuron _$NeuronFromJson(Map<String, dynamic> json) => Neuron()
   ..id = (json['id'] as num).toInt()
+  ..dendrite = Dendrite.fromJson(json['dendrite'] as Map<String, dynamic>)
   ..tao = (json['tao'] as num).toDouble()
   ..fastSurge = (json['fastSurge'] as num).toDouble()
   ..taoJ = (json['taoJ'] as num).toDouble()
@@ -78,13 +78,11 @@ Neuron _$NeuronFromJson(Map<String, dynamic> json) => Neuron()
   ..aPMax = (json['aPMax'] as num).toDouble()
   ..threshold = (json['threshold'] as num).toDouble()
   ..refractoryPeriod = (json['refractoryPeriod'] as num).toDouble()
-  ..slowSurge = (json['slowSurge'] as num).toDouble()
-  ..dendrites = (json['dendrites'] as List<dynamic>)
-      .map((e) => Dendrite.fromJson(e as Map<String, dynamic>))
-      .toList();
+  ..slowSurge = (json['slowSurge'] as num).toDouble();
 
 Map<String, dynamic> _$NeuronToJson(Neuron instance) => <String, dynamic>{
       'id': instance.id,
+      'dendrite': instance.dendrite,
       'tao': instance.tao,
       'fastSurge': instance.fastSurge,
       'taoJ': instance.taoJ,
@@ -93,32 +91,31 @@ Map<String, dynamic> _$NeuronToJson(Neuron instance) => <String, dynamic>{
       'threshold': instance.threshold,
       'refractoryPeriod': instance.refractoryPeriod,
       'slowSurge': instance.slowSurge,
-      'dendrites': instance.dendrites,
     };
 
 Model _$ModelFromJson(Map<String, dynamic> json) => Model(
       Neuron.fromJson(json['neuron'] as Map<String, dynamic>),
     )
       ..synapses = (json['synapses'] as num).toInt()
-      ..activeSynapse = (json['activeSynapse'] as num).toInt()
       ..poissonPatternSpread = (json['poissonPatternSpread'] as num).toInt()
       ..percentOfExcititorySynapses =
           (json['percentOfExcititorySynapses'] as num).toDouble()
+      ..noiseCount = (json['noiseCount'] as num).toInt()
+      ..activeSynapse = (json['activeSynapse'] as num).toInt()
       ..hertz = (json['hertz'] as num).toInt()
-      ..poissonPatternMax = (json['poissonPatternMax'] as num).toDouble()
-      ..poissonPatternMin = (json['poissonPatternMin'] as num).toDouble()
       ..noiseLambda = (json['noiseLambda'] as num).toDouble()
-      ..noiseCount = (json['noiseCount'] as num).toInt();
+      ..poissonPatternMin = (json['poissonPatternMin'] as num).toDouble()
+      ..poissonPatternMax = (json['poissonPatternMax'] as num).toDouble();
 
 Map<String, dynamic> _$ModelToJson(Model instance) => <String, dynamic>{
       'synapses': instance.synapses,
-      'activeSynapse': instance.activeSynapse,
       'poissonPatternSpread': instance.poissonPatternSpread,
       'percentOfExcititorySynapses': instance.percentOfExcititorySynapses,
-      'hertz': instance.hertz,
-      'poissonPatternMax': instance.poissonPatternMax,
-      'poissonPatternMin': instance.poissonPatternMin,
-      'noiseLambda': instance.noiseLambda,
       'noiseCount': instance.noiseCount,
       'neuron': instance.neuron,
+      'activeSynapse': instance.activeSynapse,
+      'hertz': instance.hertz,
+      'noiseLambda': instance.noiseLambda,
+      'poissonPatternMin': instance.poissonPatternMin,
+      'poissonPatternMax': instance.poissonPatternMax,
     };

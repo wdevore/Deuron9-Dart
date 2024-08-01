@@ -27,6 +27,9 @@ class SimulationPropertiesTabWidget extends StatefulWidget {
     panels.add(_buildSimGlobalPanel(appState));
     panels.add(_buildPoissonPanel(appState));
     panels.add(_buildNeuronPanel(appState));
+    panels.add(_buildDendritePanel(appState));
+    panels.add(_buildCompartmentPanel(appState));
+    panels.add(_buildSynapsePanel(appState));
   }
 
   @override
@@ -42,7 +45,12 @@ class _SimulationPropertiesTabWidgetState
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: const EdgeInsets.all(5.0),
       child: ExpansionPanelList(
+        dividerColor: Colors.blue.shade400,
+        expandedHeaderPadding: const EdgeInsets.all(2.0),
+        materialGapSize: 3.0,
+        expandIconColor: Colors.blue.shade700,
         expansionCallback: (panelIndex, isExpanded) {
           setState(() {
             widget.panels[panelIndex].isExpanded = isExpanded;
@@ -53,7 +61,7 @@ class _SimulationPropertiesTabWidgetState
             return ExpansionPanel(
               headerBuilder: (context, isExpanded) {
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.fromLTRB(5.0, 2.0, 0.0, 0.0),
                   child: Text(sp.headerValue),
                 );
               },
@@ -83,7 +91,10 @@ SimPropPanel _buildSimGlobalPanel(AppState appState) {
             return FloatFieldWidget(
               controller: stimScalerController,
               label: 'Stimulus scaler: ',
-              setValue: (double value) => configModel.stimulusScaler = value,
+              setValue: (double value) {
+                configModel.stimulusScaler = value;
+              },
+              // cursorPos: stimScalerController.selection.base.offset,
             );
           },
         ),
@@ -245,6 +256,219 @@ SimPropPanel _buildNeuronPanel(AppState appState) {
                     controller: taoSController,
                     label: 'Tao S: ',
                     setValue: (double value) => neuron.taoS = value,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
+
+SimPropPanel _buildDendritePanel(AppState appState) {
+  TextEditingController taoEffController = TextEditingController();
+  TextEditingController lengthController = TextEditingController();
+  TextEditingController minPSPController = TextEditingController();
+
+  taoEffController.text = appState.model.neuron.dendrite.taoEff.toString();
+  lengthController.text = appState.model.neuron.dendrite.length.toString();
+  minPSPController.text = appState.model.neuron.dendrite.minPSPValue.toString();
+
+  return SimPropPanel(
+    headerValue: 'Dendrite',
+    expandedValue: Consumer<Dendrite>(
+      builder: (context, dendrite, child) {
+        return Column(
+          mainAxisSize:
+              MainAxisSize.min, // This is needed for the Flexibles below.
+          children: [
+            Flexible(
+              child: Row(
+                children: [
+                  FloatFieldWidget(
+                    controller: taoEffController,
+                    label: 'tao Eff: ',
+                    setValue: (double value) => dendrite.taoEff = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: lengthController,
+                    label: 'Length: ',
+                    setValue: (double value) => dendrite.length = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: minPSPController,
+                    label: 'MinPSP: ',
+                    setValue: (double value) => dendrite.minPSPValue = value,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
+
+SimPropPanel _buildCompartmentPanel(AppState appState) {
+  TextEditingController weightMinController = TextEditingController();
+  TextEditingController weightMaxController = TextEditingController();
+
+  weightMinController.text =
+      appState.model.neuron.dendrite.compartment.weightMin.toString();
+  weightMaxController.text =
+      appState.model.neuron.dendrite.compartment.weightMax.toString();
+
+  return SimPropPanel(
+    headerValue: 'Compartment',
+    expandedValue: Consumer<Compartment>(
+      builder: (context, compartment, child) {
+        return Column(
+          mainAxisSize:
+              MainAxisSize.min, // This is needed for the Flexibles below.
+          children: [
+            Flexible(
+              child: Row(
+                children: [
+                  FloatFieldWidget(
+                    controller: weightMinController,
+                    label: 'Weight Min: ',
+                    setValue: (double value) => compartment.weightMin = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: weightMaxController,
+                    label: 'Weight Max: ',
+                    setValue: (double value) => compartment.weightMax = value,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
+
+SimPropPanel _buildSynapsePanel(AppState appState) {
+  TextEditingController alphaController = TextEditingController();
+  TextEditingController amaController = TextEditingController();
+  TextEditingController ambController = TextEditingController();
+
+  Synapse syn = appState.model.neuron.dendrite.compartment.synapse;
+  alphaController.text = syn.alpha.toString();
+  amaController.text = syn.ama.toString();
+  ambController.text = syn.amb.toString();
+
+  TextEditingController lamdaController = TextEditingController();
+  TextEditingController fastLearnController = TextEditingController();
+  TextEditingController slowLeanController = TextEditingController();
+
+  lamdaController.text = syn.lambda.toString();
+  fastLearnController.text = syn.learningRateFast.toString();
+  slowLeanController.text = syn.learningRateSlow.toString();
+
+  TextEditingController muController = TextEditingController();
+  TextEditingController taoIController = TextEditingController();
+  TextEditingController taoNController = TextEditingController();
+
+  muController.text = syn.mu.toString();
+  taoIController.text = syn.taoI.toString();
+  taoNController.text = syn.taoN.toString();
+
+  TextEditingController taoPController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
+
+  taoPController.text = syn.taoP.toString();
+  weightController.text = syn.w.toString();
+
+  return SimPropPanel(
+    headerValue: 'Synapse',
+    expandedValue: Consumer<Synapse>(
+      builder: (context, synapse, child) {
+        return Column(
+          mainAxisSize:
+              MainAxisSize.min, // This is needed for the Flexibles below.
+          children: [
+            Flexible(
+              child: Row(
+                children: [
+                  FloatFieldWidget(
+                    controller: alphaController,
+                    label: 'Alpha: ',
+                    setValue: (double value) => synapse.alpha = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: amaController,
+                    label: 'Ama: ',
+                    setValue: (double value) => synapse.ama = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: ambController,
+                    label: 'Amb: ',
+                    setValue: (double value) => synapse.amb = value,
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Row(
+                children: [
+                  FloatFieldWidget(
+                    controller: lamdaController,
+                    label: 'Lambda: ',
+                    setValue: (double value) => synapse.lambda = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: fastLearnController,
+                    label: 'Fast Learn Rate: ',
+                    setValue: (double value) =>
+                        synapse.learningRateFast = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: slowLeanController,
+                    label: 'Slow Learn Rate: ',
+                    setValue: (double value) =>
+                        synapse.learningRateSlow = value,
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Row(
+                children: [
+                  FloatFieldWidget(
+                    controller: muController,
+                    label: 'Mu: ',
+                    setValue: (double value) => synapse.mu = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: taoIController,
+                    label: 'TaoI: ',
+                    setValue: (double value) => synapse.taoI = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: taoNController,
+                    label: 'TaoN: ',
+                    setValue: (double value) => synapse.taoN = value,
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Row(
+                children: [
+                  FloatFieldWidget(
+                    controller: taoPController,
+                    label: 'TaoP: ',
+                    setValue: (double value) => synapse.taoP = value,
+                  ),
+                  FloatFieldWidget(
+                    controller: weightController,
+                    label: 'Weight: ',
+                    setValue: (double value) => synapse.w = value,
                   ),
                 ],
               ),

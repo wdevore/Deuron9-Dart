@@ -16,15 +16,8 @@ ConfigModel _$ConfigModelFromJson(Map<String, dynamic> json) => ConfigModel()
   ..outputPoissonFiles = json['outputPoissonFiles'] as String
   ..outputSynapseSurgeFiles = json['outputSynapseSurgeFiles'] as String
   ..outputSynapseSpikeFiles = json['outputSynapseSpikeFiles'] as String
-  ..scroll = (json['scroll'] as num).toDouble()
   ..dataOutputPath = json['dataOutputPath'] as String
-  ..rangeStart = (json['rangeStart'] as num).toInt()
-  ..rangeEnd = (json['rangeEnd'] as num).toInt()
   ..sourceStimulus = json['sourceStimulus'] as String
-  ..stimulusScaler = (json['stimulusScaler'] as num).toDouble()
-  ..duration = (json['duration'] as num).toInt()
-  ..softAcceleration = (json['softAcceleration'] as num).toDouble()
-  ..softCurve = (json['softCurve'] as num).toDouble()
   ..outputDendriteAvgFiles = json['outputDendriteAvgFiles'] as String
   ..outputSynapseWeightFiles = json['outputSynapseWeightFiles'] as String
   ..outputSomaSpikeFiles = json['outputSomaSpikeFiles'] as String
@@ -33,8 +26,15 @@ ConfigModel _$ConfigModelFromJson(Map<String, dynamic> json) => ConfigModel()
   ..spans = (json['spans'] as num).toInt()
   ..outputSomaAPSlowFiles = json['outputSomaAPSlowFiles'] as String
   ..outputSynapsePspFiles = json['outputSynapsePspFiles'] as String
+  ..outputStimulusFiles = json['outputStimulusFiles'] as String
+  ..softAcceleration = (json['softAcceleration'] as num).toDouble()
+  ..softCurve = (json['softCurve'] as num).toDouble()
+  ..stimulusScaler = (json['stimulusScaler'] as num).toDouble()
+  ..duration = (json['duration'] as num).toInt()
   ..timeScale = (json['timeScale'] as num).toInt()
-  ..outputStimulusFiles = json['outputStimulusFiles'] as String;
+  ..rangeStart = (json['rangeStart'] as num).toInt()
+  ..rangeEnd = (json['rangeEnd'] as num).toInt()
+  ..scroll = (json['scroll'] as num).toDouble();
 
 Map<String, dynamic> _$ConfigModelToJson(ConfigModel instance) =>
     <String, dynamic>{
@@ -47,15 +47,8 @@ Map<String, dynamic> _$ConfigModelToJson(ConfigModel instance) =>
       'outputPoissonFiles': instance.outputPoissonFiles,
       'outputSynapseSurgeFiles': instance.outputSynapseSurgeFiles,
       'outputSynapseSpikeFiles': instance.outputSynapseSpikeFiles,
-      'scroll': instance.scroll,
       'dataOutputPath': instance.dataOutputPath,
-      'rangeStart': instance.rangeStart,
-      'rangeEnd': instance.rangeEnd,
       'sourceStimulus': instance.sourceStimulus,
-      'stimulusScaler': instance.stimulusScaler,
-      'duration': instance.duration,
-      'softAcceleration': instance.softAcceleration,
-      'softCurve': instance.softCurve,
       'outputDendriteAvgFiles': instance.outputDendriteAvgFiles,
       'outputSynapseWeightFiles': instance.outputSynapseWeightFiles,
       'outputSomaSpikeFiles': instance.outputSomaSpikeFiles,
@@ -64,6 +57,13 @@ Map<String, dynamic> _$ConfigModelToJson(ConfigModel instance) =>
       'spans': instance.spans,
       'outputSomaAPSlowFiles': instance.outputSomaAPSlowFiles,
       'outputSynapsePspFiles': instance.outputSynapsePspFiles,
-      'timeScale': instance.timeScale,
       'outputStimulusFiles': instance.outputStimulusFiles,
+      'softAcceleration': instance.softAcceleration,
+      'softCurve': instance.softCurve,
+      'stimulusScaler': instance.stimulusScaler,
+      'duration': instance.duration,
+      'timeScale': instance.timeScale,
+      'rangeStart': instance.rangeStart,
+      'rangeEnd': instance.rangeEnd,
+      'scroll': instance.scroll,
     };

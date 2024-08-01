@@ -14,15 +14,15 @@ class ConfigModel with ChangeNotifier {
   String outputPoissonFiles = '';
   String outputSynapseSurgeFiles = '';
   String outputSynapseSpikeFiles = '';
-  double scroll = 0.0; // velocity
+  double _scroll = 0.0; // velocity
   String dataOutputPath = '';
-  int rangeStart = 0;
-  int rangeEnd = 0;
+  int _rangeStart = 0;
+  int _rangeEnd = 0;
   String sourceStimulus = '';
-  double stimulusScaler = 10;
-  int duration = 10000;
-  double softAcceleration = 0.05;
-  double softCurve = 2; // 1.0 = linear, 2.0 = parabola
+  double _stimulusScaler = 10;
+  int _duration = 10000;
+  double _softAcceleration = 0.05;
+  double _softCurve = 2; // 1.0 = linear, 2.0 = parabola
   String outputDendriteAvgFiles = '';
   String outputSynapseWeightFiles = '';
   String outputSomaSpikeFiles = '';
@@ -31,7 +31,7 @@ class ConfigModel with ChangeNotifier {
   int spans = 5;
   String outputSomaAPSlowFiles = '';
   String outputSynapsePspFiles = '';
-  int timeScale = 100;
+  int _timeScale = 100;
   String outputStimulusFiles = '';
 
   ConfigModel();
@@ -50,18 +50,63 @@ class ConfigModel with ChangeNotifier {
   }
 
   // ---------------------------
-  set softnessAcceleration(double v) {
-    softAcceleration = v;
+  set softAcceleration(double v) {
+    _softAcceleration = v;
     notifyListeners();
   }
 
-  double get softnessAcceleration => softAcceleration;
+  double get softAcceleration => _softAcceleration;
 
   // ---------------------------
-  set softnessCurve(double v) {
-    softCurve = v;
+  set softCurve(double v) {
+    _softCurve = v;
     notifyListeners();
   }
 
-  double get softnessCurve => softCurve;
+  double get softCurve => _softCurve;
+
+  // ---------------------------
+  set stimulusScaler(double v) {
+    _stimulusScaler = v;
+    notifyListeners();
+  }
+
+  double get stimulusScaler => _stimulusScaler;
+
+  // -----------------------------------
+  set duration(int v) {
+    _duration = v;
+    notifyListeners();
+  }
+
+  int get duration => _duration;
+
+  // -----------------------------------
+  set timeScale(int v) {
+    _timeScale = v;
+    notifyListeners();
+  }
+
+  int get timeScale => _timeScale;
+  // -----------------------------------
+  set rangeStart(int v) {
+    _rangeStart = v;
+    notifyListeners();
+  }
+
+  int get rangeStart => _rangeStart;
+  // -----------------------------------
+  set rangeEnd(int v) {
+    _rangeEnd = v;
+    notifyListeners();
+  }
+
+  int get rangeEnd => _rangeEnd;
+  // ---------------------------
+  set scroll(double v) {
+    _scroll = v;
+    notifyListeners();
+  }
+
+  double get scroll => _scroll;
 }

@@ -31,7 +31,7 @@ class _IntFieldWidgetState extends State<IntFieldWidget> {
           Expanded(
             child: TextFormField(
               controller: widget.controller,
-              inputFormatters: [FilteringIntFormatter()],
+              // inputFormatters: [FilteringIntFormatter()],
               onChanged: (value) {
                 widget.setValue(int.tryParse(value) ?? 0);
               },

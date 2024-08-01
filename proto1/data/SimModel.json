@@ -18,35 +18,31 @@
         "threshold": 15.0,
         "refractoryPeriod": 3.0,
         "slowSurge": 10.0,
-        "dendrites": [
-            {
+        "dendrite": {
+            "id": 0,
+            "length": 1.0,
+            "taoEff": 10.0,
+            "minPSPValue": -5.0,
+            "compartment": {
                 "id": 0,
-                "length": 1.0,
-                "taoEff": 10.0,
-                "minPSPValue": -5.0,
-                "compartments": [
-                    {
-                        "id": 0,
-                        "weightMin": -5.0,
-                        "weightMax": 10.0,
-                        "weightDivisor": 2.0,
-                        "synapse": {
-                            "taoP": 20.0,
-                            "taoN": 30.0,
-                            "mu": 0.5,
-                            "distance": 1.0,
-                            "lambda": 1.0,
-                            "amb": 10.0,
-                            "w": 5.0,
-                            "alpha": 1.0,
-                            "learningRateSlow": 0.2,
-                            "learningRateFast": 0.3,
-                            "taoI": 10.0,
-                            "ama": 1.0
-                        }
-                    }
-                ]
+                "weightMin": -5.0,
+                "weightMax": 10.0,
+                "weightDivisor": 2.0,
+                "synapse": {
+                    "taoP": 20.0,
+                    "taoN": 30.0,
+                    "mu": 0.5,
+                    "distance": 1.0,
+                    "lambda": 1.0,
+                    "amb": 10.0,
+                    "w": 5.0,
+                    "alpha": 1.0,
+                    "learningRateSlow": 0.2,
+                    "learningRateFast": 0.3,
+                    "taoI": 10.0,
+                    "ama": 1.0
+                }
             }
-        ]
+        }
     }
 }
