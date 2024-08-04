@@ -7,6 +7,7 @@ part of 'model.dart';
 // **************************************************************************
 
 Synapse _$SynapseFromJson(Map<String, dynamic> json) => Synapse()
+  ..excititory = json['excititory'] as bool
   ..taoP = (json['taoP'] as num).toDouble()
   ..taoN = (json['taoN'] as num).toDouble()
   ..mu = (json['mu'] as num).toDouble()
@@ -21,6 +22,7 @@ Synapse _$SynapseFromJson(Map<String, dynamic> json) => Synapse()
   ..ama = (json['ama'] as num).toDouble();
 
 Map<String, dynamic> _$SynapseToJson(Synapse instance) => <String, dynamic>{
+      'excititory': instance.excititory,
       'taoP': instance.taoP,
       'taoN': instance.taoN,
       'mu': instance.mu,

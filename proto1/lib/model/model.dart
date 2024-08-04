@@ -5,6 +5,7 @@ part 'model.g.dart';
 
 @JsonSerializable()
 class Synapse with ChangeNotifier {
+  bool _excititory = false;
   double _taoP = 0;
   double _taoN = 0;
   double _mu = 0;
@@ -28,6 +29,14 @@ class Synapse with ChangeNotifier {
   factory Synapse.fromJson(Map<String, dynamic> json) =>
       _$SynapseFromJson(json);
   Map<String, dynamic> toJson() => _$SynapseToJson(this);
+
+  // -----------------------------------
+  set excititory(bool v) {
+    _excititory = v;
+    notifyListeners();
+  }
+
+  bool get excititory => _excititory;
 
   // -----------------------------------
   set taoP(double v) {
@@ -207,6 +216,10 @@ class Dendrite with ChangeNotifier {
   }
 
   double get minPSPValue => _minPSPValue;
+
+  void initialize() {}
+
+  void reset() {}
 }
 
 @JsonSerializable()

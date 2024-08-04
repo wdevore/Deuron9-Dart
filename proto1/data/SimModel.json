@@ -29,6 +29,7 @@
                 "weightMax": 10.0,
                 "weightDivisor": 2.0,
                 "synapse": {
+                    "excititory": false,
                     "taoP": 20.0,
                     "taoN": 30.0,
                     "mu": 0.5,

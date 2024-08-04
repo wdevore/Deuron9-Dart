@@ -9,7 +9,7 @@ import 'config_model.dart';
 import 'environment.dart';
 import 'model.dart';
 
-/// AppState is the environment and state management.
+/// AppState is the environment AND state management.
 class AppState with ChangeNotifier {
   factory AppState.create() => AppState();
 
