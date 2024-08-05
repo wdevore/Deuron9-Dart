@@ -2,9 +2,15 @@ import 'dart:math';
 
 import '../model/appstate.dart';
 import '../model/model.dart';
+import 'compartment_bio.dart';
 
+// DendriteBio is part of a compartment
 class DendriteBio {
   late AppState appState;
+  // Contains Compartments
+  List<CompartmentBio> compartments = [];
+
+  int synapses = 0;
 
   DendriteBio(AppState appState);
 
@@ -22,10 +28,16 @@ class DendriteBio {
 
   void initialize() {}
 
-  void reset() {}
+  void reset() {
+    compartments[0].reset();
+  }
 
   double integrate(int spanT, int t) {
-    // TODO
-    return 0.0;
+    Dendrite dendrite = appState.model.neuron.dendrite;
+
+    double sum = compartments[0].integrate(spanT, t);
+    double psp = max(sum, dendrite.minPSPValue);
+
+    return psp;
   }
 }

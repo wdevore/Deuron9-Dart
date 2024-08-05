@@ -1,10 +1,10 @@
 import 'dart:math';
 
+import '../cell/axon.dart';
 import '../model/appstate.dart';
 import '../model/model.dart';
 import '../samples/samples.dart';
 import 'dendrite_bio.dart';
-import 'iaxon.dart';
 
 class Soma {
   // Properties
@@ -13,7 +13,7 @@ class Soma {
   late Samples samples;
 
   // Axon is the output
-  late IAxon axon;
+  late Axon axon;
   late Neuron neuron;
   late DendriteBio dendrite;
 
@@ -181,5 +181,9 @@ class Soma {
 
   int output() {
     return axon.output();
+  }
+
+  void setAxon(Axon axon) {
+    this.axon = axon;
   }
 }

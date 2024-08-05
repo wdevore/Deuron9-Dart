@@ -1,13 +1,14 @@
 import 'dart:math';
 
 import '../cell/soma.dart';
-import '../model/model.dart';
+import '../cell/synapse_bio.dart';
 import 'soma_sample.dart';
+import 'synapse_samples.dart';
 
 class Samples {
   // Synaptic data. There are N synapses and each is tracked
   // with their own collection.
-  List<List<Synapse>> synData = [];
+  List<List<SynapseSamples>?> synData = [];
 
   List<SomaSample> somaData = [];
 
@@ -66,5 +67,32 @@ class Samples {
       ..apSlow = soma.apSlow
       ..psp = soma.psp
       ..output = soma.output());
+  }
+
+  // Collects a sample from the running synapse (aka bio) not
+  // the persistance model
+  void collectSynapse(SynapseBio synapse, int id, int t) {
+    // Check if a channel is already in play. Create a new channel if not.
+    if (synData[id] == null) {
+      synData[id] = [];
+    }
+
+    synapseSurgeMin = min(synapseSurgeMin, synapse.surge);
+    synapseSurgeMax = max(synapseSurgeMax, synapse.surge);
+    synapsePspMin = min(synapsePspMin, synapse.psp);
+    synapsePspMax = max(synapsePspMax, synapse.psp);
+    synapseWeightMin = min(synapseWeightMin, synapse.w);
+    synapseWeightMax = max(synapseWeightMax, synapse.w);
+
+    SynapseSamples ss = SynapseSamples()
+      ..t = t
+      ..id = synapse.id
+      ..weight = synapse.w
+      ..surge = synapse.surge
+      ..psp = synapse.psp
+      // Input is either Noise or Stimulus
+      ..input = synapse.stream.output();
+
+    synData[id]?.add(ss);
   }
 }

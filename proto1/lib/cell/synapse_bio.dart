@@ -1,11 +1,14 @@
 import 'dart:math';
 
-import 'package:proto1/model/synapse_model.dart';
+import '../model/config_model.dart';
+import '../model/environment.dart';
+import '../model/synapse_model.dart';
 
 import '../cell/soma.dart';
 
 import '../model/appstate.dart';
 import '../model/model.dart';
+import '../samples/samples.dart';
 import '../stimulus/ibit_stream.dart';
 import 'compartment_bio.dart';
 import 'dendrite_bio.dart';
@@ -13,10 +16,14 @@ import 'dendrite_bio.dart';
 class SynapseBio {
   // Properties
   late AppState appState;
+  late ConfigModel configModel;
+  late Environment environment;
 
   late Soma soma;
   late DendriteBio dendrite;
   late CompartmentBio compartment;
+
+  late Samples samples;
 
   int id = 0;
 
@@ -68,10 +75,10 @@ class SynapseBio {
   double distanceEfficacy = 0;
 
   // The farther the synapse is from the Soma the less of an influence
-  // this synapse has. The function can either be linear or non-linear.
+  // this synapse ha The function can either be linear or non-linear.
   // The default is linear.
   // Note: no matter how far a synapse is it will still have an influence
-  // otherwise it's useless.
+  // otherwise it's useles
   // distance's value = 1.0 for synapses closest to soma. The farther out
   // the value reaches a minimum of around ~0.25.
   // distance is multiplied into soma.psp.
@@ -101,13 +108,15 @@ class SynapseBio {
       ..compartment = compartment;
 
     syn.compartment.addSynapse(syn);
+    syn.configModel = appState.configModel;
+    syn.environment = appState.environment;
 
     return syn;
   }
 
   // Initialize this synapse from the synapses persistence.
-  void initialize(SynapsesModel synapses) {
-    Synapse syn = synapses.synapses[id];
+  void initialize() {
+    // Synapse syn = synapsesynapses[id];
 
     bio.excititory = bio.excititory;
     bio.taoP = bio.taoP;
@@ -149,18 +158,18 @@ class SynapseBio {
 
   // Integrate is the actual integration
   double integrate(int spanT, int t) {
-    return tripleIntegration(spanT, t);
+    return tripleIntegration(t);
   }
 
   // TripleIntegration advanced
   // =============================================================
   // Triplet:
   // =============================================================
-  // Pre trace, Post slow and fast traces.
+  // Pre trace, Post slow and fast trace
   //
   // Depression: fast post trace with at pre spike
   // Potentiation: slow post trace at post spike
-  double tripleIntegration(int spanT, int t) {
+  double tripleIntegration(int t) {
     double value = 0.0;
 
     // Calc psp based on current dynamics: (t - preT). As dt increases
@@ -174,7 +183,7 @@ class SynapseBio {
     // The output of the stream is the input to this synapse.
     if (stream.output() == 1) {
       // A spike has arrived on the input to this synapse.
-      // fmt.Printf("(%d) at %d\n", s.id, t)
+      // fmt.Printf("(%d) at %d\n", id, t)
 
       if (excititory) {
         surge = psp + bio.ama * exp(-psp / bio.taoP);
@@ -195,6 +204,61 @@ class SynapseBio {
 
       updateWeight = true;
     }
+
+    if (excititory) {
+      psp = surge * exp(-dt / bio.taoP);
+    } else {
+      psp = surge * exp(-dt / bio.taoN);
+    }
+
+    // If an AP occurred (from the soma) we read the current psp value and add it to the "w"
+    if (soma.output() == 1) {
+      // #######################################
+      // Potentiation LTP
+      // #######################################
+      // Read pre trace (aka psp) and slow AP trace for adjusting weight accordingly.
+      //     Post efficacy                       weight dependence        triplet sum
+      double wf = weightFactor(true);
+      dwP =
+          soma.efficacyTrace * distanceEfficacy * wf * (psp + soma.apSlowPrior);
+      updateWeight = true;
+    }
+
+    // Finally update the weight.
+    if (updateWeight) {
+      double newW = w + dwP - dwD;
+
+      switch (environment.weightBounding) {
+        case Environment.weightBoundingHard:
+          w = max(min(newW, wMax), wMin);
+        case Environment.weightBoundingSoft: // soft-bounds (Easing)
+          // https://neuronaldynamicepfl.ch/online/Ch19.S2.html
+          double d;
+          // With soft-bounds we want to slow down the movement of the weight as it moves
+          // towards wMax/wMin.
+          if (excititory) {
+            d = (wMax - newW).abs();
+            // sb is larger the farther away newW is from wMax
+          } else {
+            d = (newW - wMin).abs();
+          }
+
+          double sb =
+              configModel.softAcceleration * pow(d, configModel.softCurve);
+          // We still need hard-bounds to make sure the bounds aren't exceeded.
+          w = max(min(sb * newW, wMax), wMin);
+      }
+    }
+
+    // Return the "value" of this synapse for this "t"
+    if (excititory) {
+      value = psp * w * bio.distance;
+    } else {
+      value = -psp * w * bio.distance; // is inhibitory
+    }
+
+    // Collect this synapse' values at this time step
+    samples.collectSynapse(this, id, t);
 
     return value;
   }

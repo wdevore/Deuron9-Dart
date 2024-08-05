@@ -2,18 +2,29 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 
+import '../cell/synapse_bio.dart';
+import '../samples/samples.dart';
 import 'config_model.dart';
 import 'synapse_model.dart';
 
 class Environment with ChangeNotifier {
+  static const int weightBoundingHard = 0;
+  static const int weightBoundingSoft = 1;
+
   double _minRangeValue = 0.0;
   double _maxRangeValue = 0.0;
   double _centerRangeValue = 0.0;
 
+  late Samples samples;
+
+  // Synapses
   late SynapsesModel synapsesModel;
+
+  // Synapses Bio
+  List<SynapseBio> synapses = [];
+
   List<List<int>> stimulus = [];
   List<List<int>> expandedStimulus = [];
 
@@ -22,18 +33,35 @@ class Environment with ChangeNotifier {
   // Hard(0) or Soft(1) (used by Synapse for triple integration)
   int _weightBounding = 0;
 
-  void initialize() async {
+  late String dataPath;
+
+  Environment();
+
+  factory Environment.create() {
+    Environment environment = Environment();
+
+    return environment;
+  }
+
+  void initialize(ConfigModel configModel) async {
     _minRangeValue = 5.0;
     _maxRangeValue = 10.0;
+    dataPath = p.join(Directory.current.path, 'data/');
+
+    // Load synaptic presets. Most likely from a previous run.
+    loadSynapsesModel(configModel);
+
+    samples = Samples.create();
+
+    loadStimulus(configModel);
   }
 
   void update() {
     notifyListeners();
   }
 
-  void loadStimulus(ConfigModel model) {
-    var dataPath = p.join(Directory.current.path, 'data/');
-    String path = '$dataPath${model.sourceStimulus}.data';
+  void loadStimulus(ConfigModel configModel) {
+    String path = '$dataPath${configModel.sourceStimulus}.data';
 
     final File file = File(path);
 
@@ -47,11 +75,12 @@ class Environment with ChangeNotifier {
       // size of stimulus is 10 + (10*3) = 40
       // StimExpander thus becomes an expanding factor. For every bit in
       // the pattern we append StimExpander 0s.
-      if (model.stimulusScaler == 0) {
+      if (configModel.stimulusScaler == 0) {
         // Special case of 0 then duration is unchanged (i.e. reflected)
-        model.stimulusScaler = 1; // Note: we don't call Changed() on purpose.
+        configModel.stimulusScaler =
+            1; // Note: we don't call Changed() on purpose.
       } else {
-        duration = (duration * model.stimulusScaler).toInt();
+        duration = (duration * configModel.stimulusScaler).toInt();
       }
 
       List<int> expanded = List.filled(duration, 0);
@@ -66,7 +95,7 @@ class Environment with ChangeNotifier {
           stim.add(0);
         }
         // Move col "past" the expanded positions.
-        col += model.stimulusScaler.toInt();
+        col += configModel.stimulusScaler.toInt();
       }
 
       stimulus.add(stim);
@@ -99,9 +128,9 @@ class Environment with ChangeNotifier {
   }
 
   void loadSynapsesModel(ConfigModel configModel) {
-    var dataPath = p.join(Directory.current.path, 'data/synapses/');
+    String synPath = '$dataPath/synapses';
 
-    String path = '$dataPath${configModel.sourceStimulus}.data';
+    String path = '$synPath${configModel.synapticPresets}';
 
     final File file = File(path);
     String json = file.readAsStringSync();
