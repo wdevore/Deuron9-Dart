@@ -36,6 +36,8 @@ class AppState with ChangeNotifier {
       model = Model.fromJson(map);
     }
 
+    environment.initialize(configModel);
+
     return 0;
   }
 

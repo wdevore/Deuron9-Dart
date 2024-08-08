@@ -6,13 +6,13 @@ import 'compartment_bio.dart';
 
 // DendriteBio is part of a compartment
 class DendriteBio {
-  late AppState appState;
+  final AppState appState;
   // Contains Compartments
   List<CompartmentBio> compartments = [];
 
   int synapses = 0;
 
-  DendriteBio(AppState appState);
+  DendriteBio(this.appState);
 
   // APEfficacy Calc this synapses's reaction to the AP based on its
   // distance from the soma.

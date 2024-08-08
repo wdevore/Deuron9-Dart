@@ -1,4 +1,4 @@
-import 'package:proto1/cell/synapse_bio.dart';
+import '../cell/synapse_bio.dart';
 
 class CompartmentBio {
   // Contains Synapses

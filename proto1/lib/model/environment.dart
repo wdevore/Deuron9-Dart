@@ -17,6 +17,7 @@ class Environment with ChangeNotifier {
   double _maxRangeValue = 0.0;
   double _centerRangeValue = 0.0;
 
+  // Holds both synapse and soma samples.
   late Samples samples;
 
   // Synapses
@@ -32,14 +33,14 @@ class Environment with ChangeNotifier {
 
   // Hard(0) or Soft(1) (used by Synapse for triple integration)
   int _weightBounding = 0;
+  int initialWeightValues = 0; // Default to 'preset'
 
   late String dataPath;
 
   Environment();
 
-  factory Environment.create() {
-    Environment environment = Environment();
-
+  factory Environment.create(ConfigModel configModel) {
+    Environment environment = Environment()..initialize(configModel);
     return environment;
   }
 
@@ -65,29 +66,33 @@ class Environment with ChangeNotifier {
 
     final File file = File(path);
 
+    expandedStimulus = [];
+
     List<String> lines = file.readAsLinesSync();
     // Each line is the same length
     int duration = lines[0].length;
+    double stimulusScaler = configModel.stimulusScaler;
+
+    // The array size is duration + (duration * StimExpander)
+    // For example, if duration is 10 and stim_scaler is 3 then
+    // size of stimulus is 10 + (10*3) = 40
+    // StimExpander thus becomes an expanding factor. For every bit in
+    // the pattern we append StimExpander 0s.
+    if (stimulusScaler == 0) {
+      // Special case of 0 then duration is unchanged (i.e. reflected)
+      // Note: we don't call Changed() on purpose.
+      stimulusScaler = 1;
+    } else {
+      duration = (duration * stimulusScaler).toInt();
+    }
 
     for (var pattern in lines) {
-      // The array size is duration + (duration * StimExpander)
-      // For example, if duration is 10 and stim_scaler is 3 then
-      // size of stimulus is 10 + (10*3) = 40
-      // StimExpander thus becomes an expanding factor. For every bit in
-      // the pattern we append StimExpander 0s.
-      if (configModel.stimulusScaler == 0) {
-        // Special case of 0 then duration is unchanged (i.e. reflected)
-        configModel.stimulusScaler =
-            1; // Note: we don't call Changed() on purpose.
-      } else {
-        duration = (duration * configModel.stimulusScaler).toInt();
-      }
-
       List<int> expanded = List.filled(duration, 0);
       List<int> stim = [];
 
       int col = 0;
-      for (var c in pattern.split('')) {
+      List<String> spikes = pattern.split('');
+      for (var c in spikes) {
         if (c == '|') {
           expanded[col] = 1;
           stim.add(1);
@@ -95,7 +100,7 @@ class Environment with ChangeNotifier {
           stim.add(0);
         }
         // Move col "past" the expanded positions.
-        col += configModel.stimulusScaler.toInt();
+        col += stimulusScaler.toInt();
       }
 
       stimulus.add(stim);
@@ -128,7 +133,7 @@ class Environment with ChangeNotifier {
   }
 
   void loadSynapsesModel(ConfigModel configModel) {
-    String synPath = '$dataPath/synapses';
+    String synPath = '${dataPath}synapses/';
 
     String path = '$synPath${configModel.synapticPresets}';
 
@@ -178,4 +183,12 @@ class Environment with ChangeNotifier {
   }
 
   int get weightBounding => _weightBounding;
+
+  // ---------------------------
+  set initialWeights(int v) {
+    initialWeightValues = v;
+    notifyListeners();
+  }
+
+  int get initialWeights => initialWeightValues;
 }

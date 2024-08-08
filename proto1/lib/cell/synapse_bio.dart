@@ -2,10 +2,7 @@ import 'dart:math';
 
 import '../model/config_model.dart';
 import '../model/environment.dart';
-import '../model/synapse_model.dart';
-
 import '../cell/soma.dart';
-
 import '../model/appstate.dart';
 import '../model/model.dart';
 import '../samples/samples.dart';
@@ -15,7 +12,7 @@ import 'dendrite_bio.dart';
 
 class SynapseBio {
   // Properties
-  late AppState appState;
+  AppState appState;
   late ConfigModel configModel;
   late Environment environment;
 
@@ -23,11 +20,11 @@ class SynapseBio {
   late DendriteBio dendrite;
   late CompartmentBio compartment;
 
-  late Samples samples;
+  // Samples samples = Samples.create();
 
   int id = 0;
 
-  SynapseBio(AppState appState);
+  SynapseBio(this.appState);
 
   // true = excititory, false = inhibitory
   bool excititory = false;
@@ -116,29 +113,29 @@ class SynapseBio {
 
   // Initialize this synapse from the synapses persistence.
   void initialize() {
-    // Synapse syn = synapsesynapses[id];
+    Synapse syn = appState.model.neuron.dendrite.compartment.synapse;
 
-    bio.excititory = bio.excititory;
-    bio.taoP = bio.taoP;
-    bio.taoN = bio.taoN;
-    bio.mu = bio.mu;
-    bio.distance = bio.distance;
-    bio.lambda = bio.lambda;
-    bio.amb = bio.amb;
-    bio.w = bio.w;
-    bio.alpha = bio.alpha;
-    bio.learningRateSlow = bio.learningRateSlow;
-    bio.learningRateFast = bio.learningRateFast;
-    bio.taoI = bio.taoI;
-    bio.ama = bio.ama;
+    bio.excititory = syn.excititory;
+    bio.taoP = syn.taoP;
+    bio.taoN = syn.taoN;
+    bio.mu = syn.mu;
+    bio.distance = syn.distance;
+    bio.lambda = syn.lambda;
+    bio.amb = syn.amb;
+    bio.w = syn.w;
+    bio.alpha = syn.alpha;
+    bio.learningRateSlow = syn.learningRateSlow;
+    bio.learningRateFast = syn.learningRateFast;
+    bio.taoI = syn.taoI;
+    bio.ama = syn.ama;
 
-    initialW = bio.w;
-    w = bio.w;
-    excititory = bio.excititory;
+    initialW = syn.w;
+    w = syn.w;
+    excititory = syn.excititory;
 
     // Calc this synapses's reaction to the AP based on its
     // distance from the soma.
-    distanceEfficacy = dendrite.aPEfficacy(bio.distance);
+    distanceEfficacy = dendrite.aPEfficacy(syn.distance);
   }
 
   // Reset resets for another sim pass
@@ -258,7 +255,8 @@ class SynapseBio {
     }
 
     // Collect this synapse' values at this time step
-    samples.collectSynapse(this, id, t);
+    // samples.collectSynapse(this, id, t);
+    environment.samples.collectSynapse(this, id, t);
 
     return value;
   }

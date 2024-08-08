@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:proto1/widgets/simulation_properties_tab_widget.dart';
-import 'package:proto1/widgets/system_tab_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:split_view/split_view.dart';
 
+import '../main.dart';
+import '../widgets/simulation_properties_tab_widget.dart';
+import '../widgets/system_tab_widget.dart';
 import '../model/appstate.dart';
 import 'global_tab_widget.dart';
 import 'spikes_graph_widget.dart';
@@ -32,6 +33,7 @@ class _MainHomePageState extends State<MainHomePage> {
           ElevatedButton(
             onPressed: () {
               // Create Start simulation
+              simulation.run();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange.shade50,

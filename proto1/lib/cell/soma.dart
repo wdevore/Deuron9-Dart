@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../model/environment.dart';
 import '../cell/axon.dart';
 import '../model/appstate.dart';
 import '../model/model.dart';
@@ -9,8 +10,7 @@ import 'dendrite_bio.dart';
 class Soma {
   // Properties
   late AppState appState;
-
-  late Samples samples;
+  late Environment environment;
 
   // Axon is the output
   late Axon axon;
@@ -73,7 +73,8 @@ class Soma {
   factory Soma.create(AppState appState, Samples samples) {
     Soma s = Soma()
       ..appState = appState
-      ..samples = samples
+      ..environment = appState.environment
+      // ..samples = samples
       ..neuron = appState.model.neuron;
 
     return s;
@@ -164,7 +165,7 @@ class Soma {
     apSlow = nSlowSurge * exp(-dt / neuron.taoS);
 
     // Collect this soma' values at this time step
-    samples.collectSoma(this, t);
+    environment.samples.collectSoma(this, t);
 
     return axon.output();
   }

@@ -156,6 +156,52 @@ class _GlobalTabWidgetState extends State<GlobalTabWidget> {
             );
           },
         ),
+        const Divider(),
+        Consumer<Environment>(
+          builder: (context, environment, child) {
+            return Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    title: const Text('Presets'),
+                    leading: Radio<int>(
+                      value: 0,
+                      groupValue: environment.initialWeights,
+                      onChanged: (value) {
+                        environment.initialWeights = value!;
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    title: const Text('Current'),
+                    leading: Radio<int>(
+                      value: 1,
+                      groupValue: environment.initialWeights,
+                      onChanged: (value) {
+                        environment.initialWeights = value!;
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    title: const Text('Random'),
+                    leading: Radio<int>(
+                      value: 2,
+                      groupValue: environment.initialWeights,
+                      onChanged: (value) {
+                        environment.initialWeights = value!;
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        const Divider(),
         Consumer<Environment>(
           builder: (context, environment, child) {
             return Row(
@@ -188,6 +234,7 @@ class _GlobalTabWidgetState extends State<GlobalTabWidget> {
             );
           },
         ),
+        const Divider(),
         Consumer<ConfigModel>(
           builder: (context, configModel, child) {
             return Row(

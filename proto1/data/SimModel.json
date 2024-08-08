@@ -6,7 +6,7 @@
     "hertz": 5,
     "poissonPatternMax": 300.0,
     "poissonPatternMin": 50.0,
-    "noiseLambda": 1000.0,
+    "noiseLambda": 50.0,
     "noiseCount": 10,
     "neuron": {
         "id": 0,

@@ -8,9 +8,9 @@ import 'synapse_samples.dart';
 class Samples {
   // Synaptic data. There are N synapses and each is tracked
   // with their own collection.
-  List<List<SynapseSamples>?> synData = [];
+  List<List<SynapseSamples>?> synSamples = [];
 
-  List<SomaSample> somaData = [];
+  List<SomaSample> somaSamples = [];
 
   double synapseSurgeMin = 0.0;
   double synapseSurgeMax = 0.0;
@@ -35,8 +35,11 @@ class Samples {
   }
 
   void reset() {
-    synData = [];
-    somaData = [];
+    synSamples = [];
+    for (var i = 0; i < 50; i++) {
+      synSamples.add([]);
+    }
+    somaSamples = [];
 
     synapseSurgeMin = 1000000000000.0;
     synapseSurgeMax = -1000000000000.0;
@@ -61,7 +64,7 @@ class Samples {
     somaAPSlowMin = min(somaAPSlowMin, soma.apSlow);
     somaAPSlowMax = max(somaAPSlowMax, soma.apSlow);
 
-    somaData.add(SomaSample()
+    somaSamples.add(SomaSample()
       ..t = t
       ..apFast = soma.apFast
       ..apSlow = soma.apSlow
@@ -73,8 +76,8 @@ class Samples {
   // the persistance model
   void collectSynapse(SynapseBio synapse, int id, int t) {
     // Check if a channel is already in play. Create a new channel if not.
-    if (synData[id] == null) {
-      synData[id] = [];
+    if (synSamples[id] == null) {
+      synSamples[id] = [];
     }
 
     synapseSurgeMin = min(synapseSurgeMin, synapse.surge);
@@ -93,6 +96,6 @@ class Samples {
       // Input is either Noise or Stimulus
       ..input = synapse.stream.output();
 
-    synData[id]?.add(ss);
+    synSamples[id]!.add(ss);
   }
 }

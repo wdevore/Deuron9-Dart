@@ -41,6 +41,7 @@ import 'ibit_stream.dart';
 
 class PoissonStream implements IBitStream {
   late PoissonDistribution poisson;
+  late PoissonDistribution poisson2;
 
   // The Interspike interval (ISI) is a counter
   // When the counter reaches 0 a spike is placed on the output
@@ -65,6 +66,8 @@ class PoissonStream implements IBitStream {
     ps.averagePerInterval = averagePerInterval; // Lambda
     ps.poisson = PoissonDistribution(averagePerInterval);
     ps.rando = Random(seed);
+
+    ps.poisson2 = PoissonDistribution(averagePerInterval / 2.5);
 
     ps.reset();
 
@@ -101,9 +104,14 @@ class PoissonStream implements IBitStream {
     averagePerInterval = model.noiseLambda;
   }
 
+  // Create an event per interval of time, for example, spikes in a 1 sec span.
+  // A firing rate given in rate/ms, for example, 0.2 in 1ms (0.2/1)
+  // or 200 in 1sec (200/1000ms)
   int next() {
     int r = poisson.sample(random: rando);
-    r = (rando.nextDouble() / (1 << 64).toDouble()).toInt() * r;
+    int r2 = poisson2.sample(random: rando);
+    // double div = 64.0 - 1.0; // Nbits - 1
+    r = (rando.nextDouble() * r * r2).toInt();
     return r;
 
     // isiF := -math.Log(1.0-r) / averagePerInterval
