@@ -43,6 +43,9 @@ void main() async {
       ChangeNotifierProvider.value(
         value: _appState.model.neuron.dendrite.compartment.synapse,
       ),
+      ChangeNotifierProvider.value(
+        value: _appState.samplesData,
+      ),
     ],
     child: const SimApp(),
   ));

@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:split_view/split_view.dart';
 
 import '../main.dart';
+import '../model/environment.dart';
 import '../widgets/simulation_properties_tab_widget.dart';
 import '../widgets/system_tab_widget.dart';
 import '../model/appstate.dart';
 import 'global_tab_widget.dart';
-import 'spikes_graph_widget.dart';
+import 'graphs/spikes_graph_widget.dart';
 
 const String defaultExportFileName = 'SimModel.json';
 
@@ -97,7 +98,7 @@ class _MainHomePageState extends State<MainHomePage> {
           limits: [null, WeightLimit(min: 0.3, max: 0.7)], // Constraints
         ),
         children: [
-          _buildGraphView(),
+          _buildGraphView(appState),
           _buildTabBar(appState),
         ],
       ),
@@ -105,34 +106,41 @@ class _MainHomePageState extends State<MainHomePage> {
   }
 }
 
-Widget _buildGraphView() {
-  final points = [
-    const Offset(50, 150),
-    const Offset(150, 75),
-    const Offset(250, 250),
-    const Offset(130, 200),
-    const Offset(270, 100),
-  ];
+Widget _buildGraphView(AppState appState) {
+  // final points = [
+  //   const Offset(50, 150),
+  //   const Offset(150, 75),
+  //   const Offset(250, 250),
+  //   const Offset(130, 200),
+  //   const Offset(270, 100),
+  // ];
 
   return SingleChildScrollView(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        SpikesGraphWidget(
-          points: points,
-          height: 200.0,
-          bgColor: Colors.black87,
+        Consumer<SampleData>(
+          builder:
+              (BuildContext context, SampleData samplesData, Widget? child) {
+            return SpikesGraphWidget(
+              appState,
+              sampleData: samplesData,
+              // points: points,
+              height: 200.0,
+              bgColor: Colors.black87,
+            );
+          },
         ),
-        SpikesGraphWidget(
-          points: points,
-          height: 300.0,
-          bgColor: Colors.black54,
-        ),
-        SpikesGraphWidget(
-          points: points,
-          height: 200.0,
-          bgColor: Colors.black45,
-        ),
+        // SpikesGraphWidget(
+        //   // points: points,
+        //   height: 300.0,
+        //   bgColor: Colors.black54,
+        // ),
+        // SpikesGraphWidget(
+        //   // points: points,
+        //   height: 200.0,
+        //   bgColor: Colors.black45,
+        // ),
       ],
     ),
   );

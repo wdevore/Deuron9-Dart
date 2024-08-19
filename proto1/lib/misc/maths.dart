@@ -1,12 +1,19 @@
+class TupleDouble {
+  double a = 0.0;
+  double b = 0.0;
+}
+
 class Maths {
-// Lerp returns a the value between min and max given t = 0->1
-// Typically used in conjunction with random generators
+  static TupleDouble tupleDouble = TupleDouble();
+
+  // Lerp returns a the value between min and max given t = 0->1
+  // Typically used in conjunction with random generators
   static double lerp(double min, double max, double t) {
     return min * (1.0 - t) + max * t;
   }
 
-// Linear returns 0->1 for a "value" between min and max.
-// Generally used to map from view-space to unit-space
+  // Linear returns 0->1 for a "value" between min and max.
+  // Generally used to map from view-space to unit-space
   static double linear(double min, double max, double value) {
     if (max < min) {
       double tmp = max;
@@ -19,5 +26,24 @@ class Maths {
     }
 
     return (value - min) / (max - min);
+  }
+
+  // MapSampleToUnit from sample-space to unit-space where unit-space is 0->1
+  static double mapSampleToUnit(double v, double min, double max) {
+    return linear(min, max, v);
+  }
+
+  // MapUnitToWindow from unit-space to window-space
+  static double mapUnitToWindow(double v, double min, double max) {
+    return lerp(min, max, v);
+  }
+
+  // MapWindowToLocal = graph-space
+  static TupleDouble mapWindowToLocal(
+      double x, double y, double offsetX, double offsetY) {
+    tupleDouble
+      ..a = offsetX + x
+      ..b = offsetY + y;
+    return tupleDouble;
   }
 }

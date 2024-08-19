@@ -165,7 +165,7 @@ class Soma {
     apSlow = nSlowSurge * exp(-dt / neuron.taoS);
 
     // Collect this soma' values at this time step
-    environment.samples.collectSoma(this, t);
+    appState.samplesData.samples.collectSoma(this, t);
 
     return axon.output();
   }

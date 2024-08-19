@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+
 import '../cell/soma.dart';
 import '../cell/synapse_bio.dart';
 import 'soma_sample.dart';
@@ -33,6 +35,8 @@ class Samples {
     sam.reset();
     return sam;
   }
+
+  // void update() => notifyListeners();
 
   void reset() {
     synSamples = [];

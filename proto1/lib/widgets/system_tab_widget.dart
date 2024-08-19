@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
-import 'package:proto1/utils.dart';
+import 'package:proto1/io_utils.dart';
 
 import '../model/appstate.dart';
 import '../model/config_model.dart';
@@ -46,7 +46,7 @@ class SystemTabWidget extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 var filePath = p.join(Directory.current.path, 'data/');
-                Utils.export(
+                IOUtils.export(
                     appState.configModel.toJson(), 'config.json', filePath,
                     showDialog: true);
               },
@@ -96,7 +96,7 @@ class SystemTabWidget extends StatelessWidget {
               onPressed: () {
                 // _export(appState);
                 var filePath = p.join(Directory.current.path, 'data/');
-                Utils.export(appState.toString(), 'SimModel.json', filePath,
+                IOUtils.export(appState.toString(), 'SimModel.json', filePath,
                     showDialog: true);
               },
               style: ElevatedButton.styleFrom(
@@ -147,7 +147,7 @@ class SystemTabWidget extends StatelessWidget {
 // ---------------------------------------------------------
 void _importGlobalConfig(AppState appState) async {
   var filePath = p.join(Directory.current.path, 'data/');
-  var map = await Utils.importData(filePath, showDialog: true);
+  var map = await IOUtils.importData(filePath, showDialog: true);
   if (map != null) {
     final model = ConfigModel.fromJson(map);
 
@@ -164,7 +164,7 @@ const String defaultExportFileName = 'SimModel.json';
 // ---------------------------------------------------------
 void _import(AppState appState) async {
   var filePath = p.join(Directory.current.path, 'data/');
-  var map = await Utils.importData(filePath, showDialog: true);
+  var map = await IOUtils.importData(filePath, showDialog: true);
   if (map != null) {
     final model = Model.fromJson(map);
 

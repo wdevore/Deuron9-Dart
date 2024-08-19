@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 // Exports
 // ---------------------------------------------------------
 
-class Utils {
+class IOUtils {
   static Future<String?> showExportFileDialog(String filename) async {
     try {
       String? fileName = await FilePicker.platform.saveFile(

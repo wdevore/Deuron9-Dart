@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 
 import '../cell/synapse_bio.dart';
 import '../samples/samples.dart';
+import '../stimulus/ibit_stream.dart';
 import 'config_model.dart';
 import 'synapse_model.dart';
 
@@ -17,8 +18,14 @@ class Environment with ChangeNotifier {
   double _maxRangeValue = 0.0;
   double _centerRangeValue = 0.0;
 
-  // Holds both synapse and soma samples.
-  late Samples samples;
+  // // Holds both synapse and soma samples.
+  // late Samples samples;
+
+  // Noise streams
+  List<IBitStream> noises = [];
+
+  // Stimulus
+  List<IBitStream> stimuli = [];
 
   // Synapses
   late SynapsesModel synapsesModel;
@@ -52,7 +59,7 @@ class Environment with ChangeNotifier {
     // Load synaptic presets. Most likely from a previous run.
     loadSynapsesModel(configModel);
 
-    samples = Samples.create();
+    // samples = Samples.create();
 
     loadStimulus(configModel);
   }

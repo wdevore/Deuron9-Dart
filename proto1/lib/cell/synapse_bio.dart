@@ -256,7 +256,7 @@ class SynapseBio {
 
     // Collect this synapse' values at this time step
     // samples.collectSynapse(this, id, t);
-    environment.samples.collectSynapse(this, id, t);
+    appState.samplesData.samples.collectSynapse(this, id, t);
 
     return value;
   }

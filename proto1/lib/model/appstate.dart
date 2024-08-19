@@ -3,17 +3,35 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:flutter/foundation.dart';
-import 'package:proto1/utils.dart';
+import 'package:proto1/io_utils.dart';
 
+import '../samples/samples.dart';
 import 'config_model.dart';
 import 'environment.dart';
 import 'model.dart';
+
+class SampleData with ChangeNotifier {
+  // Holds both synapse and soma samples.
+  late Samples samples;
+
+  SampleData();
+
+  factory SampleData.create() {
+    SampleData sd = SampleData()..samples = Samples.create();
+
+    return sd;
+  }
+
+  void update() => notifyListeners();
+}
 
 /// AppState is the environment AND state management.
 class AppState with ChangeNotifier {
   factory AppState.create() => AppState();
 
   AppState();
+
+  SampleData samplesData = SampleData.create();
 
   // Environment var
   Environment environment = Environment();
@@ -25,13 +43,13 @@ class AppState with ChangeNotifier {
 
   Future<int> initialize() async {
     var filePath = p.join(Directory.current.path, 'data/config.json');
-    Map<String, dynamic>? map = await Utils.importData(filePath);
+    Map<String, dynamic>? map = await IOUtils.importData(filePath);
     if (map != null) {
       configModel = ConfigModel.fromJson(map);
     }
 
     filePath = p.join(Directory.current.path, 'data/SimModel.json');
-    map = await Utils.importData(filePath);
+    map = await IOUtils.importData(filePath);
     if (map != null) {
       model = Model.fromJson(map);
     }

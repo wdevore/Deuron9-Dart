@@ -64,9 +64,9 @@ class PoissonStream implements IBitStream {
 
     ps.seed = seed;
     ps.averagePerInterval = averagePerInterval; // Lambda
-    ps.poisson = PoissonDistribution(averagePerInterval);
     ps.rando = Random(seed);
 
+    ps.poisson = PoissonDistribution(averagePerInterval);
     ps.poisson2 = PoissonDistribution(averagePerInterval / 2.5);
 
     ps.reset();
@@ -110,6 +110,7 @@ class PoissonStream implements IBitStream {
   int next() {
     int r = poisson.sample(random: rando);
     int r2 = poisson2.sample(random: rando);
+    // poisson2.sample(random: rando);
     // double div = 64.0 - 1.0; // Nbits - 1
     r = (rando.nextDouble() * r * r2).toInt();
     return r;

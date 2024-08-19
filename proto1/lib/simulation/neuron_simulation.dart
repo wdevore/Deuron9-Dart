@@ -25,12 +25,6 @@ import '../stimulus/stimulus_stream.dart';
 class NeuronSimulation {
   late AppState appState;
 
-  // Noise streams
-  List<IBitStream> noises = [];
-
-  // Stimulus
-  List<IBitStream> stimuli = [];
-
   int t = 0;
   late NeuronBio neuron;
 
@@ -52,9 +46,11 @@ class NeuronSimulation {
     // we can exercise them on each simulation step.
     int seed = 5000;
     Model model = appState.model;
+    Environment environment = appState.environment;
+
     for (int i = 0; i < model.noiseCount; i++) {
       IBitStream noise = PoissonStream.create(seed, model.noiseLambda);
-      noises.add(noise);
+      environment.noises.add(noise);
       seed += 5000;
     }
     if (kDebugMode) {
@@ -63,20 +59,19 @@ class NeuronSimulation {
 
     // -----------------------------------------------------------------
     // Now create the stimulus streams
-    Environment environment = appState.environment;
     for (int i = 0; i < environment.stimulusStreamCnt; i++) {
       List<int> stimList = environment.expandedStimulus[i];
 
       StimulusStream ss = StimulusStream.create(stimList, model.hertz);
 
-      stimuli.add(ss);
+      environment.stimuli.add(ss);
     }
 
     if (kDebugMode) {
       print("Stimulus streams created");
     }
 
-    Samples samples = environment.samples;
+    Samples samples = appState.samplesData.samples;
 
     // -----------------------------------------------------------------
     // Create cell dependencies starting with soma first.
@@ -93,8 +88,10 @@ class NeuronSimulation {
     int genSynID = 0;
 
     // -----------------------------------------------------------------
-    // We need a synapse for each stream, both Noise and Stimulus
-    for (var stimulus in stimuli) {
+    // Stimulus
+    // We need a synapse for each stream. First is stimulas
+    // on the lower 10 synaptic inputs.
+    for (var stimulus in environment.stimuli) {
       SynapseBio synapse = SynapseBio.create(
         appState,
         genSynID,
@@ -112,7 +109,8 @@ class NeuronSimulation {
 
     // -----------------------------------------------------------------
     // Noise
-    for (var noise in noises) {
+    // The rest of the inputs are noise
+    for (var noise in environment.noises) {
       SynapseBio synapse = SynapseBio.create(
         appState,
         genSynID,
@@ -134,8 +132,9 @@ class NeuronSimulation {
     neuron.initialize();
   }
 
-  // TODO: launch in an Isolate?
   void run() {
+    reset();
+
     int time = 0;
     for (var i = 0; i < appState.configModel.duration; i++) {
       time = step(time);
@@ -143,23 +142,29 @@ class NeuronSimulation {
         break;
       }
     }
+
+    appState.samplesData.update();
+
+    if (kDebugMode) {
+      print('Run complete');
+    }
   }
 
   void reset() {
     t = 0;
 
     neuron.reset(appState.model);
+    Environment environment = appState.environment;
 
-    for (var noise in noises) {
+    for (var noise in environment.noises) {
       noise.reset();
     }
 
-    for (var stimulus in stimuli) {
+    for (var stimulus in environment.stimuli) {
       stimulus.reset();
     }
 
-    Environment environment = appState.environment;
-    environment.samples.reset();
+    appState.samplesData.samples.reset();
 
     // Set initial values for each synapse: Presets, Current or Random?
     switch (environment.initialWeights) {
@@ -190,14 +195,15 @@ class NeuronSimulation {
 
   bool simulate(int t, int duration) {
     neuron.integrate(0, t);
+    Environment environment = appState.environment;
 
     // Step all streams. This causes each stream to update and move
     // its internal value to its output for the next integration.
-    for (var noise in noises) {
+    for (var noise in environment.noises) {
       noise.step();
     }
 
-    for (var stimulus in stimuli) {
+    for (var stimulus in environment.stimuli) {
       stimulus.step();
     }
 
