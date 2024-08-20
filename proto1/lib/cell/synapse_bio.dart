@@ -5,7 +5,6 @@ import '../model/environment.dart';
 import '../cell/soma.dart';
 import '../model/appstate.dart';
 import '../model/model.dart';
-import '../samples/samples.dart';
 import '../stimulus/ibit_stream.dart';
 import 'compartment_bio.dart';
 import 'dendrite_bio.dart';

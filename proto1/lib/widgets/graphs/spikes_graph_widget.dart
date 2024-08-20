@@ -1,13 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../model/environment.dart';
 import '../../misc/maths.dart';
 import '../../model/appstate.dart';
 import '../../model/config_model.dart';
-import '../../samples/samples.dart';
 import '../../samples/synapse_samples.dart';
 import '../border_clip_path.dart';
 
@@ -108,7 +106,7 @@ class SpikePainter extends CustomPainter {
 
     points.clear();
 
-    double wY = 0.0;
+    double wY = 5.0;
 
     // Iterate the noise data and map samples that are within range-start
     // range-end. The data width should match width of the Input sample
@@ -132,7 +130,7 @@ class SpikePainter extends CustomPainter {
                 double uX = Maths.mapSampleToUnit(t.toDouble(),
                     cm.rangeStart.toDouble(), cm.rangeEnd.toDouble());
                 double wX = Maths.mapUnitToWindow(uX, 0.0, size.width);
-                TupleDouble lXY = Maths.mapWindowToLocal(wX, wY, 0.0, 2.0);
+                TupleDouble lXY = Maths.mapWindowToLocal(wX, wY, 0.0, 0.0);
                 points.add(Offset(lXY.a, lXY.b));
               }
             }
@@ -157,7 +155,7 @@ class SpikePainter extends CustomPainter {
 
     points.clear();
 
-    double wY = 80.0;
+    double wY = 85.0;
 
     // Iterate the noise data and map samples that are within range-start
     // range-end. The data width should match width of the Input sample
@@ -181,7 +179,7 @@ class SpikePainter extends CustomPainter {
                 double uX = Maths.mapSampleToUnit(t.toDouble(),
                     cm.rangeStart.toDouble(), cm.rangeEnd.toDouble());
                 double wX = Maths.mapUnitToWindow(uX, 0.0, size.width);
-                TupleDouble lXY = Maths.mapWindowToLocal(wX, wY, 0.0, 2.0);
+                TupleDouble lXY = Maths.mapWindowToLocal(wX, wY, 0.0, 0.0);
                 points.add(Offset(lXY.a, lXY.b));
               }
             }

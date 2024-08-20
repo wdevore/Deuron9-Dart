@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
 import '../cell/synapse_bio.dart';
-import '../samples/samples.dart';
 import '../stimulus/ibit_stream.dart';
 import 'config_model.dart';
 import 'synapse_model.dart';

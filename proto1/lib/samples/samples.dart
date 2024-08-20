@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-
 import '../cell/soma.dart';
 import '../cell/synapse_bio.dart';
 import 'soma_sample.dart';

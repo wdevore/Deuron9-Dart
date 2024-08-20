@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:split_view/split_view.dart';
 
 import '../main.dart';
-import '../model/environment.dart';
 import '../widgets/simulation_properties_tab_widget.dart';
 import '../widgets/system_tab_widget.dart';
 import '../model/appstate.dart';
@@ -108,14 +107,6 @@ class _MainHomePageState extends State<MainHomePage> {
 }
 
 Widget _buildGraphView(AppState appState) {
-  // final points = [
-  //   const Offset(50, 150),
-  //   const Offset(150, 75),
-  //   const Offset(250, 250),
-  //   const Offset(130, 200),
-  //   const Offset(270, 100),
-  // ];
-
   return SingleChildScrollView(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -127,21 +118,11 @@ Widget _buildGraphView(AppState appState) {
               appState,
               sampleData: samplesData,
               // points: points,
-              height: 200.0,
+              height: 180.0,
               bgColor: Colors.black87,
             );
           },
         ),
-        // SpikesGraphWidget(
-        //   // points: points,
-        //   height: 300.0,
-        //   bgColor: Colors.black54,
-        // ),
-        // SpikesGraphWidget(
-        //   // points: points,
-        //   height: 200.0,
-        //   bgColor: Colors.black45,
-        // ),
       ],
     ),
   );
