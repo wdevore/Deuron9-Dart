@@ -52,6 +52,7 @@ class _MainHomePageState extends State<MainHomePage> {
           ElevatedButton(
             onPressed: () {
               // Reset simulation
+              simulation.reset();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange.shade50,

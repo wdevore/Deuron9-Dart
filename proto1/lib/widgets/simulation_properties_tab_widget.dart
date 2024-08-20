@@ -134,7 +134,7 @@ SimPropPanel _buildPoissonPanel(AppState appState) {
                 children: [
                   FloatFieldWidget(
                     controller: firingRateController,
-                    label: 'Firing Rate: ',
+                    label: 'Firing Rate (lambda): ',
                     setValue: (double value) => model.noiseLambda = value,
                   ),
                 ],

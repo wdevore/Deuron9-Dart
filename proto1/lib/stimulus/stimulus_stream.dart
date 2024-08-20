@@ -115,4 +115,10 @@ class StimulusStream implements IBitStream {
   update(Model model) {
     // conData, _ := mod.Data().(*model.ConfigJSON)
   }
+
+  @override
+  configure({int? seed, double? lambda}) {
+    // TODO: implement configure
+    throw UnimplementedError();
+  }
 }

@@ -39,9 +39,44 @@ import 'package:data/data.dart';
 import '../model/model.dart';
 import 'ibit_stream.dart';
 
+class CustomPoissonDistribution extends PoissonDistribution {
+  // Lambda is the number of events within an interval
+  const CustomPoissonDistribution(super.lambda);
+
+  // If lamba > 745 then divide lamba by 2
+  @override
+  int sample({Random? random}) {
+    const uniform = UniformDistribution.standard();
+    var i = 0, b = 1.0;
+
+    if (lambda <= 750) {
+      while (b >= exp(-lambda)) {
+        b *= uniform.sample(random: random);
+        i++;
+      }
+      return i - 1;
+    }
+
+    var lambert = lambda / 2;
+    while (b >= exp(-lambert)) {
+      b *= uniform.sample(random: random);
+      i++;
+    }
+    i--;
+
+    var j = 0, c = 1.0;
+    while (c >= exp(-lambert)) {
+      c *= uniform.sample(random: random);
+      j++;
+    }
+    j--;
+
+    return (i + j) ~/ 2;
+  }
+}
+
 class PoissonStream implements IBitStream {
-  late PoissonDistribution poisson;
-  late PoissonDistribution poisson2;
+  late CustomPoissonDistribution poisson;
 
   // The Interspike interval (ISI) is a counter
   // When the counter reaches 0 a spike is placed on the output
@@ -53,23 +88,18 @@ class PoissonStream implements IBitStream {
   double averagePerInterval = 0.0;
 
   int seed = 0;
-  Random rando = Random();
+  late Random rando;
 
   int outputSpike = 0;
 
   PoissonStream();
 
   factory PoissonStream.create(int seed, double averagePerInterval) {
-    PoissonStream ps = PoissonStream();
-
-    ps.seed = seed;
-    ps.averagePerInterval = averagePerInterval; // Lambda
-    ps.rando = Random(seed);
-
-    ps.poisson = PoissonDistribution(averagePerInterval);
-    ps.poisson2 = PoissonDistribution(averagePerInterval / 2.5);
-
-    ps.reset();
+    PoissonStream ps = PoissonStream()
+      ..seed = seed
+      .. // lambda comes from SimModel.json
+          averagePerInterval = averagePerInterval // Lambda
+      ..reset();
 
     return ps;
   }
@@ -82,7 +112,7 @@ class PoissonStream implements IBitStream {
   @override
   reset() {
     rando = Random(seed);
-    poisson = PoissonDistribution(averagePerInterval);
+    poisson = CustomPoissonDistribution(averagePerInterval);
     isi = next();
     outputSpike = 0;
   }
@@ -109,14 +139,26 @@ class PoissonStream implements IBitStream {
   // or 200 in 1sec (200/1000ms)
   int next() {
     int r = poisson.sample(random: rando);
-    int r2 = poisson2.sample(random: rando);
-    // poisson2.sample(random: rando);
-    // double div = 64.0 - 1.0; // Nbits - 1
-    r = (rando.nextDouble() * r * r2).toInt();
+    double rand = rando.nextDouble();
+    int offset = rando.nextInt(150);
+    if (rand < 0.5) {
+      r -= offset;
+    } else {
+      r += offset;
+    }
+    // if (rand < 0.25) {
+    //   r = (rand * r).toInt();
+    // }
     return r;
 
     // isiF := -math.Log(1.0-r) / averagePerInterval
     // fmt.Print(isiF, "  ")
     // return int64(math.Round(isiF))
+  }
+
+  @override
+  configure({int? seed, double? lambda}) {
+    this.seed = seed ?? 100;
+    averagePerInterval = lambda ?? 100.0;
   }
 }

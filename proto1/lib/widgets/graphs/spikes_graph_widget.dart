@@ -77,6 +77,9 @@ class SpikePainter extends CustomPainter {
   late ConfigModel cm;
   late Environment env;
 
+  final strokeWidth = 4.0;
+  final spikeRowOffset = 8;
+
   SpikePainter(this.samples, this.appState) {
     cm = appState.configModel;
     env = appState.environment;
@@ -87,9 +90,20 @@ class SpikePainter extends CustomPainter {
   // We use the Maths' functions to map data to unit-space
   // which then allows to map to graph-space.
   void paint(Canvas canvas, Size size) {
-    final noisePaint = Paint()
+    _drawNoise(canvas, size, strokeWidth, spikeRowOffset);
+    _drawStimulus(canvas, size, strokeWidth, spikeRowOffset);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+
+  void _drawNoise(
+      Canvas canvas, Size size, double strokeWidth, int spikeRowOffset) {
+    final paint = Paint()
       ..color = Colors.yellow.shade600
-      ..strokeWidth = 2
+      ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.square;
 
     points.clear();
@@ -106,7 +120,6 @@ class SpikePainter extends CustomPainter {
     // Channels 0-9 are stimulus, 10-19 are noise
     int channel = 0;
     List<List<SynapseSamples>?> synSamples = samples.samples.synSamples;
-    const spikeRowOffset = 4;
 
     for (var synapse in synSamples) {
       if (synapse != null) {
@@ -132,11 +145,55 @@ class SpikePainter extends CustomPainter {
     }
 
     // Now plot all mapped points.
-    canvas.drawPoints(PointMode.points, points, noisePaint);
+    canvas.drawPoints(PointMode.points, points, paint);
   }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  void _drawStimulus(
+      Canvas canvas, Size size, double strokeWidth, int spikeRowOffset) {
+    final paint = Paint()
+      ..color = Colors.green.shade600
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.square;
+
+    points.clear();
+
+    double wY = 80.0;
+
+    // Iterate the noise data and map samples that are within range-start
+    // range-end. The data width should match width of the Input sample
+    // data because the noise is "mixed in" with the input samples.
+
+    // How many synapses (aka channels) do we have.
+    // int channelCnt = environment.synapses.length;
+
+    // Channels 0-9 are stimulus, 10-19 are noise
+    int channel = 0;
+    List<List<SynapseSamples>?> synSamples = samples.samples.synSamples;
+
+    for (var synapse in synSamples) {
+      if (synapse != null) {
+        if (synapse.isNotEmpty) {
+          if (channel < 10) {
+            for (var t = cm.rangeStart; t < cm.rangeEnd; t++) {
+              if (synapse[t].input == 1) {
+                // Spiked?
+                // The sample value needs to be mapped
+                double uX = Maths.mapSampleToUnit(t.toDouble(),
+                    cm.rangeStart.toDouble(), cm.rangeEnd.toDouble());
+                double wX = Maths.mapUnitToWindow(uX, 0.0, size.width);
+                TupleDouble lXY = Maths.mapWindowToLocal(wX, wY, 0.0, 2.0);
+                points.add(Offset(lXY.a, lXY.b));
+              }
+            }
+            // Update row/y value and offset by a few pixels
+            wY += spikeRowOffset;
+          }
+        }
+      }
+      channel++;
+    }
+
+    // Now plot all mapped points.
+    canvas.drawPoints(PointMode.points, points, paint);
   }
 }

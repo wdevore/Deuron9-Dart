@@ -31,6 +31,8 @@ class NeuronSimulation {
   bool running = false;
   bool _step = false;
 
+  int seed = 5000;
+
   NeuronSimulation();
 
   factory NeuronSimulation.create(AppState appState) {
@@ -44,15 +46,10 @@ class NeuronSimulation {
     // First we create the Noise (Poisson) streams. Each stream will
     // be routed to a unique synapse. We need a collection of them so
     // we can exercise them on each simulation step.
-    int seed = 5000;
     Model model = appState.model;
     Environment environment = appState.environment;
 
-    for (int i = 0; i < model.noiseCount; i++) {
-      IBitStream noise = PoissonStream.create(seed, model.noiseLambda);
-      environment.noises.add(noise);
-      seed += 5000;
-    }
+    _buildNoise(seed);
     if (kDebugMode) {
       print("Poisson Noise streams created");
     }
@@ -155,9 +152,13 @@ class NeuronSimulation {
 
     neuron.reset(appState.model);
     Environment environment = appState.environment;
+    Model model = appState.model;
 
+    int seedo = seed;
     for (var noise in environment.noises) {
+      noise.configure(seed: seedo, lambda: model.noiseLambda);
       noise.reset();
+      seedo += 5000;
     }
 
     for (var stimulus in environment.stimuli) {
@@ -179,6 +180,25 @@ class NeuronSimulation {
       for (var synapse in environment.synapses) {
         synapse.initialize();
       }
+    }
+
+    // Warm up the noise
+    for (var i = 0; i < 1000; i++) {
+      for (var noise in environment.noises) {
+        noise.step();
+      }
+    }
+  }
+
+  void _buildNoise(int seed) {
+    Model model = appState.model;
+    Environment environment = appState.environment;
+    environment.noises.clear();
+
+    for (int i = 0; i < model.noiseCount; i++) {
+      IBitStream noise = PoissonStream.create(seed, model.noiseLambda);
+      environment.noises.add(noise);
+      seed += 5000;
     }
   }
 
