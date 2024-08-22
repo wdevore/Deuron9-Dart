@@ -1,9 +1,7 @@
 # Deuron9-Dart
-A Dart port of Deuron8-Go
+A Dart port of [Deuron8-Go](https://github.com/wdevore/Deuron8-Go). It is mostly to learn Dart and re-learn the simulator.
 
-# Requirements
-- Custom paint widget to draw spikes and curves
-- Widgets to control panels. The panels run along the right side.
+## Deuron9 Image
+![Deuron9 Image](Deuron9-Dart.png)
 
-# Porting issues
 
