@@ -110,7 +110,7 @@ class SynapseBio {
 
   // Initialize this synapse from the synapses persistence.
   void initialize() {
-    Synapse syn = appState.model.neuron.dendrite.compartment.synapse;
+    Synapse syn = appState.environment.synapsesModel.synapses[id];
 
     bio.excititory = syn.excititory;
     bio.taoP = syn.taoP;

@@ -6,6 +6,7 @@ import '../../model/environment.dart';
 import '../../misc/maths.dart';
 import '../../model/appstate.dart';
 import '../../model/config_model.dart';
+import '../../samples/soma_sample.dart';
 import '../../samples/synapse_samples.dart';
 import '../border_clip_path.dart';
 
@@ -78,9 +79,16 @@ class SpikePainter extends CustomPainter {
   final strokeWidth = 4.0;
   final spikeRowOffset = 8;
 
+  late Paint someSpikePaint;
+
   SpikePainter(this.samples, this.appState) {
     cm = appState.configModel;
     env = appState.environment;
+
+    someSpikePaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.square;
   }
 
   @override
@@ -90,6 +98,7 @@ class SpikePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _drawNoise(canvas, size, strokeWidth, spikeRowOffset);
     _drawStimulus(canvas, size, strokeWidth, spikeRowOffset);
+    _drawSomaSpikes(canvas, size, strokeWidth, appState);
   }
 
   @override
@@ -193,5 +202,37 @@ class SpikePainter extends CustomPainter {
 
     // Now plot all mapped points.
     canvas.drawPoints(PointMode.points, points, paint);
+  }
+
+  void _drawSomaSpikes(
+      Canvas canvas, Size size, double strokeWidth, AppState appState) {
+    double bottom = size.height;
+    double sY = 0.0;
+
+    List<SomaSample> somaSamples = appState.samplesData.samples.somaSamples;
+
+    if (somaSamples.isEmpty) return;
+
+    for (var t = cm.rangeStart; t < cm.rangeEnd; t++) {
+      // A spike = 1
+      if (somaSamples[t].output == 1) {
+        // The sample value needs to be mapped
+        double uX = Maths.mapSampleToUnit(
+          t.toDouble(),
+          cm.rangeStart.toDouble(),
+          cm.rangeEnd.toDouble(),
+        );
+        double wX = Maths.mapUnitToWindow(uX, 0.0, size.width);
+
+        var (lX, lY) = Maths.mapWindowToLocal(wX, bottom, 0.0, 0.0);
+
+        // graph space has +Y downward, but the data is oriented as +Y upward
+        // so we flip in unit-space.
+        // uY = 1.0 - uY;
+        // double wY = Maths.mapUnitToWindow(uY, 0.0, bottom);
+
+        canvas.drawLine(Offset(lX, lY), Offset(lX, lY - 10), someSpikePaint);
+      }
+    }
   }
 }
