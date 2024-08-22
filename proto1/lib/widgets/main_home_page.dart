@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:provider/provider.dart';
 import 'package:split_view/split_view.dart';
 
@@ -7,7 +8,13 @@ import '../widgets/simulation_properties_tab_widget.dart';
 import '../widgets/system_tab_widget.dart';
 import '../model/appstate.dart';
 import 'global_tab_widget.dart';
+import 'graphs/soma_apfast_graph_widget.dart';
+import 'graphs/soma_apslow_graph_widget.dart';
+import 'graphs/soma_psp_graph_widget.dart';
+import 'graphs/synapse_psp_graph_widget.dart';
 import 'graphs/spikes_graph_widget.dart';
+import 'graphs/synapse_surge_graph_widget.dart';
+import 'graphs/synapse_weights_graph_widget.dart';
 
 const String defaultExportFileName = 'SimModel.json';
 
@@ -108,22 +115,172 @@ class _MainHomePageState extends State<MainHomePage> {
 
 Widget _buildGraphView(AppState appState) {
   return SingleChildScrollView(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Consumer<SampleData>(
-          builder:
-              (BuildContext context, SampleData samplesData, Widget? child) {
-            return SpikesGraphWidget(
-              appState,
-              sampleData: samplesData,
-              // points: points,
-              height: 180.0,
-              bgColor: Colors.black87,
-            );
-          },
-        ),
-      ],
+    child: Consumer<SampleData>(
+      builder: (BuildContext context, SampleData samplesData, Widget? child) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Portal(
+              child: PortalTarget(
+                anchor: const Aligned(
+                  follower: Alignment.topLeft,
+                  target: Alignment.topLeft,
+                  offset: Offset(5, 5),
+                ),
+                visible: true,
+                portalFollower: const Text(
+                  'Spikes',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: SpikesGraphWidget(
+                    appState,
+                    sampleData: samplesData,
+                    height: 180.0,
+                    bgColor: Colors.black87,
+                  ),
+                ),
+              ),
+            ),
+            Portal(
+              child: PortalTarget(
+                anchor: const Aligned(
+                  follower: Alignment.topLeft,
+                  target: Alignment.topLeft,
+                  offset: Offset(5, 5),
+                ),
+                visible: true,
+                portalFollower: const Text(
+                  'Synapse Surge',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: SynapseSurgeGraphWidget(
+                    appState,
+                    sampleData: samplesData,
+                    height: 180.0,
+                    bgColor: Colors.black54,
+                  ),
+                ),
+              ),
+            ),
+            Portal(
+              child: PortalTarget(
+                anchor: const Aligned(
+                  follower: Alignment.topLeft,
+                  target: Alignment.topLeft,
+                  offset: Offset(5, 5),
+                ),
+                visible: true,
+                portalFollower: const Text(
+                  'Synapse Psp',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: PspGraphWidget(
+                    appState,
+                    sampleData: samplesData,
+                    height: 180.0,
+                    bgColor: Colors.black87,
+                  ),
+                ),
+              ),
+            ),
+            Portal(
+              child: PortalTarget(
+                anchor: const Aligned(
+                  follower: Alignment.topLeft,
+                  target: Alignment.topLeft,
+                  offset: Offset(5, 5),
+                ),
+                visible: true,
+                portalFollower: const Text(
+                  'Synapse Weights',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: SynapseWeightsGraphWidget(
+                    appState,
+                    sampleData: samplesData,
+                    height: 180.0,
+                    bgColor: Colors.black54,
+                  ),
+                ),
+              ),
+            ),
+            Portal(
+              child: PortalTarget(
+                anchor: const Aligned(
+                  follower: Alignment.topLeft,
+                  target: Alignment.topLeft,
+                  offset: Offset(5, 5),
+                ),
+                visible: true,
+                portalFollower: const Text(
+                  'Soma PSP',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: SomaPspGraphWidget(
+                    appState,
+                    sampleData: samplesData,
+                    height: 180.0,
+                    bgColor: Colors.black87,
+                  ),
+                ),
+              ),
+            ),
+            Portal(
+              child: PortalTarget(
+                anchor: const Aligned(
+                  follower: Alignment.topLeft,
+                  target: Alignment.topLeft,
+                  offset: Offset(5, 5),
+                ),
+                visible: true,
+                portalFollower: const Text(
+                  'Soma AP Fast',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: SomaAPFastGraphWidget(
+                    appState,
+                    sampleData: samplesData,
+                    height: 180.0,
+                    bgColor: Colors.black54,
+                  ),
+                ),
+              ),
+            ),
+            Portal(
+              child: PortalTarget(
+                anchor: const Aligned(
+                  follower: Alignment.topLeft,
+                  target: Alignment.topLeft,
+                  offset: Offset(5, 5),
+                ),
+                visible: true,
+                portalFollower: const Text(
+                  'Soma AP Slow',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: SomaAPSlowGraphWidget(
+                  appState,
+                  sampleData: samplesData,
+                  height: 180.0,
+                  bgColor: Colors.black87,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     ),
   );
 }

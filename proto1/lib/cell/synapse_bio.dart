@@ -19,8 +19,6 @@ class SynapseBio {
   late DendriteBio dendrite;
   late CompartmentBio compartment;
 
-  // Samples samples = Samples.create();
-
   int id = 0;
 
   SynapseBio(this.appState);

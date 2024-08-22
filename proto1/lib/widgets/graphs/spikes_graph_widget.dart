@@ -130,8 +130,8 @@ class SpikePainter extends CustomPainter {
                 double uX = Maths.mapSampleToUnit(t.toDouble(),
                     cm.rangeStart.toDouble(), cm.rangeEnd.toDouble());
                 double wX = Maths.mapUnitToWindow(uX, 0.0, size.width);
-                TupleDouble lXY = Maths.mapWindowToLocal(wX, wY, 0.0, 0.0);
-                points.add(Offset(lXY.a, lXY.b));
+                var (lX, lY) = Maths.mapWindowToLocal(wX, wY, 0.0, 0.0);
+                points.add(Offset(lX, lY));
               }
             }
             // Update row/y value and offset by a few pixels
@@ -179,8 +179,8 @@ class SpikePainter extends CustomPainter {
                 double uX = Maths.mapSampleToUnit(t.toDouble(),
                     cm.rangeStart.toDouble(), cm.rangeEnd.toDouble());
                 double wX = Maths.mapUnitToWindow(uX, 0.0, size.width);
-                TupleDouble lXY = Maths.mapWindowToLocal(wX, wY, 0.0, 0.0);
-                points.add(Offset(lXY.a, lXY.b));
+                var (lX, lY) = Maths.mapWindowToLocal(wX, wY, 0.0, 0.0);
+                points.add(Offset(lX, lY));
               }
             }
             // Update row/y value and offset by a few pixels

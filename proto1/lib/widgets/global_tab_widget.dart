@@ -77,12 +77,18 @@ class _GlobalTabWidgetState extends State<GlobalTabWidget> {
                 IntFieldWidget(
                   controller: rangeStartController,
                   label: 'Range Start: ',
-                  setValue: (int value) => configModel.rangeStart = value,
+                  setValue: (int value) {
+                    configModel.rangeStart = value;
+                    widget.appState.update();
+                  },
                 ),
                 IntFieldWidget(
                   controller: rangeEndController,
                   label: 'Range End: ',
-                  setValue: (int value) => configModel.rangeEnd = value,
+                  setValue: (int value) {
+                    configModel.rangeEnd = value;
+                    widget.appState.update();
+                  },
                 ),
               ],
             );
@@ -124,6 +130,7 @@ class _GlobalTabWidgetState extends State<GlobalTabWidget> {
                     divisions: 100,
                     onChanged: (value) {
                       model.activeSynapse = value.toInt();
+                      widget.appState.update();
                     },
                     // onChangeEnd: (value) => configWidget.config.aplay(),
                   ),

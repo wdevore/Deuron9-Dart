@@ -62,6 +62,7 @@ class AppState with ChangeNotifier {
   void reset() {}
 
   void update() {
+    samplesData.update();
     notifyListeners();
   }
 
