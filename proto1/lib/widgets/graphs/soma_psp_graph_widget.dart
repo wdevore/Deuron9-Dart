@@ -62,12 +62,12 @@ class DataPainter extends CustomPainter {
       ..strokeCap = StrokeCap.square;
 
     zeroLinePaint = Paint()
-      ..color = Colors.cyan
+      ..color = Colors.blue
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.square;
 
     thresholdLinePaint = Paint()
-      ..color = Colors.yellow
+      ..color = Colors.red
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.square;
   }

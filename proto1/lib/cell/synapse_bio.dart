@@ -267,12 +267,6 @@ class SynapseBio {
     return bio.lambda * bio.alpha * pow(w.abs() / wMax, bio.mu);
   }
 
-  // Efficacy : each spike of pre-synaptic neuron j sets the presynaptic spike
-  // efficacy j to 0
-  // whereafter it recovers exponentially to 1 with a time constant
-  // τj = toaJ
-  // In other words, the efficacy of a spike is suppressed by
-  // the proximity of a trailing spike.
   double efficacy(double dt) {
     return 1.0 - exp(-dt / bio.taoI);
   }
