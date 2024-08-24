@@ -207,7 +207,6 @@ class SpikePainter extends CustomPainter {
   void _drawSomaSpikes(
       Canvas canvas, Size size, double strokeWidth, AppState appState) {
     double bottom = size.height;
-    double sY = 0.0;
 
     List<SomaSample> somaSamples = appState.samplesData.samples.somaSamples;
 
