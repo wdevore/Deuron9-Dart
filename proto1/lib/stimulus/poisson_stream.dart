@@ -34,44 +34,62 @@
 
 import 'dart:math';
 
-import 'package:data/data.dart';
+import 'package:d4_random/d4_random.dart';
 
 import '../model/model.dart';
 import 'ibit_stream.dart';
 
-class CustomPoissonDistribution extends PoissonDistribution {
-  // Lambda is the number of events within an interval
-  const CustomPoissonDistribution(super.lambda);
+// class CustomPoissonDistribution extends PoissonDistribution {
+//   // Lambda is the number of events within an interval
+//   const CustomPoissonDistribution(super.lambda);
 
-  // If lamba > 745 then divide lamba by 2
-  @override
-  int sample({Random? random}) {
-    const uniform = UniformDistribution.standard();
-    var i = 0, b = 1.0;
+//   // If lamba > 745 then divide lamba by 2
+//   @override
+//   int sample({Random? random}) {
+//     const uniform = UniformDistribution.standard();
+//     var i = 0, b = 1.0;
 
-    if (lambda <= 750) {
-      while (b >= exp(-lambda)) {
-        b *= uniform.sample(random: random);
-        i++;
-      }
-      return i - 1;
-    }
+//     if (lambda <= 750) {
+//       while (b >= exp(-lambda)) {
+//         b *= uniform.sample(random: random);
+//         i++;
+//       }
+//       return i - 1;
+//     }
 
-    var lambert = lambda / 2;
-    while (b >= exp(-lambert)) {
-      b *= uniform.sample(random: random);
-      i++;
-    }
-    i--;
+//     var lambert = lambda / 2;
+//     while (b >= exp(-lambert)) {
+//       b *= uniform.sample(random: random);
+//       i++;
+//     }
+//     i--;
 
-    var j = 0, c = 1.0;
-    while (c >= exp(-lambert)) {
-      c *= uniform.sample(random: random);
-      j++;
-    }
-    j--;
+//     var j = 0, c = 1.0;
+//     while (c >= exp(-lambert)) {
+//       c *= uniform.sample(random: random);
+//       j++;
+//     }
+//     j--;
 
-    return (i + j) ~/ 2;
+//     return (i + j) ~/ 2;
+//   }
+// }
+
+class CustomPoissonDistribution {
+  late num lambda;
+  late num Function() randoP;
+
+  CustomPoissonDistribution();
+
+  factory CustomPoissonDistribution.create(num lambda) {
+    CustomPoissonDistribution cd = CustomPoissonDistribution()
+      ..lambda = lambda
+      ..randoP = randomPoisson(lambda);
+    return cd;
+  }
+
+  num sample() {
+    return randoP();
   }
 }
 
@@ -112,7 +130,7 @@ class PoissonStream implements IBitStream {
   @override
   reset() {
     rando = Random(seed);
-    poisson = CustomPoissonDistribution(averagePerInterval);
+    poisson = CustomPoissonDistribution.create(averagePerInterval);
     isi = next();
     outputSpike = 0;
   }
@@ -138,16 +156,13 @@ class PoissonStream implements IBitStream {
   // A firing rate given in rate/ms, for example, 0.2 in 1ms (0.2/1)
   // or 200 in 1sec (200/1000ms)
   int next() {
-    int r = poisson.sample(random: rando);
-    double rand = rando.nextDouble();
-    int offset = rando.nextInt(150);
-    if (rand < 0.5) {
-      r -= offset;
-    } else {
-      r += offset;
-    }
-    // if (rand < 0.25) {
-    //   r = (rand * r).toInt();
+    int r = poisson.sample().toInt();
+    // double rand = rando.nextDouble();
+    // int offset = rando.nextInt(150);
+    // if (rand < 0.5) {
+    //   r -= offset;
+    // } else {
+    //   r += offset;
     // }
     return r;
 

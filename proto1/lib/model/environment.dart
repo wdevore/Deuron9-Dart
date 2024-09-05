@@ -23,7 +23,15 @@ class Environment with ChangeNotifier {
   // Noise streams
   List<IBitStream> noises = [];
 
-  // Stimulus
+  // ------- Stimulus --------------
+  // expandedStimulus -> IBitStream -> synapse
+
+  // Original stimulus unexpanded and only serves as a source
+  // for expansion.
+  List<List<int>> stimulus = [];
+  // Expanded stimulus feeds into the streams
+  List<List<int>> expandedStimulus = [];
+  // Stimulus streams feed into the synapses
   List<IBitStream> stimuli = [];
 
   // Synapses
@@ -31,9 +39,6 @@ class Environment with ChangeNotifier {
 
   // Synapses Bio
   List<SynapseBio> synapses = [];
-
-  List<List<int>> stimulus = [];
-  List<List<int>> expandedStimulus = [];
 
   int stimulusStreamCnt = 0;
 
